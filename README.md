@@ -1,1 +1,1 @@
-Vzdalenost mezi 2 telefony i guess
+Vzdalenost mezi 2 telefony 
