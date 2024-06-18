@@ -1,2 +1,5 @@
-Vzdalenost mezi 2 telefony 
-psat v jazyce dart za pomoci Flutteru
+#Vzdalenost mezi 2 telefony 
+#Konkurence
+WifiNanScan
+#Technologie
+Flutter jazyk dart
