@@ -1,5 +1,5 @@
-#Vzdalenost mezi 2 telefony 
-#Konkurence
+# Vzdalenost mezi 2 telefony 
+# Konkurence
 WifiNanScan
-#Technologie
+# Technologie
 Flutter jazyk dart
