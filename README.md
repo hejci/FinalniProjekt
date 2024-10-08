@@ -1,3 +1,7 @@
-# hotovson
+# Aplikace pro fotbalové tréninky
 
-A new Flutter project.
+# Technologie
+jazyk Dart
+
+# Konkurence
+idk zjistim
