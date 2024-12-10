@@ -194,9 +194,29 @@ class PreMadeOutdoorTraining extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Předpřipravené tréninky")),
+      body: Stack(
+        children: [
+          // Back to home button
+          Positioned(
+            top: 16.0,
+            right: 16.0,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                textStyle: TextStyle(fontSize: 12.0),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/');
+              },
+              child: Text("Domů"),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
+
 
 // Advanced Gym Training Screen
 class PreMadeGymTraining extends StatelessWidget {
@@ -204,6 +224,25 @@ class PreMadeGymTraining extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Předpřipravené tréninky")),
+      body: Stack(
+        children: [
+          // Back to home button
+          Positioned(
+            top: 16.0,
+            right: 16.0,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                textStyle: TextStyle(fontSize: 12.0),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/');
+              },
+              child: Text("Domů"),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -214,16 +253,54 @@ class FullListOutdoorTraining extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Seznam cviků")),
+      body: Stack(
+        children: [
+          // Back to home button
+          Positioned(
+            top: 16.0,
+            right: 16.0,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                textStyle: TextStyle(fontSize: 12.0),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/');
+              },
+              child: Text("Domů"),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 // Intermediate Gym Training Screen
 class FullListGymTraining extends StatelessWidget {
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Seznam cviků")),
+      body: Stack(
+        children: [
+          // Back to home button
+          Positioned(
+            top: 16.0,
+            right: 16.0,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                textStyle: TextStyle(fontSize: 12.0),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/');
+              },
+              child: Text("Domů"),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
