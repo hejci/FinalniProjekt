@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_emoji/flutter_emoji.dart';
+
+var parser = EmojiParser();
+var home = Emoji('home', '🏠︎');
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,10 +25,10 @@ class Mainwidget extends StatefulWidget {
   const Mainwidget({Key? key}) : super(key: key);
 
   @override
-  _MainwidgetState createState() => _MainwidgetState();
+  MainPage createState() => MainPage();
 }
 
-class _MainwidgetState extends State<Mainwidget> {
+class MainPage extends State<Mainwidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -208,12 +212,13 @@ class PreMadeOutdoorTraining extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/');
               },
-              child: Text("Domů"),
+              child: Text("⌂"),
             ),
           ),
         ],
       ),
     );
+
   }
 }
 
@@ -238,7 +243,7 @@ class PreMadeGymTraining extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/');
               },
-              child: Text("Domů"),
+              child: Text("⌂"),
             ),
           ),
         ],
@@ -267,7 +272,7 @@ class FullListOutdoorTraining extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/');
               },
-              child: Text("Domů"),
+              child: Text("⌂"),
             ),
           ),
         ],
@@ -296,7 +301,7 @@ class FullListGymTraining extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/');
               },
-              child: Text("Domů"),
+              child: Text("⌂"),
             ),
           ),
         ],
