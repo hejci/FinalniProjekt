@@ -9,7 +9,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MaterialApp(
-    home: Mainwidget(),
+    home: const Mainwidget(),
     routes: {
       '/outdoorTraining': (context) => OutdoorTrainingScreen(),
       '/gymTraining': (context) => GymTrainingScreen(),
@@ -22,7 +22,7 @@ void main() {
 }
 
 class Mainwidget extends StatefulWidget {
-  const Mainwidget({Key? key}) : super(key: key);
+  const Mainwidget({super.key});
 
   @override
   MainPage createState() => MainPage();
@@ -38,36 +38,36 @@ class MainPage extends State<Mainwidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Add text on top
-              Text(
+              const Text(
                 "Kde budeš trénovat:",
                 style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16.0), // Adds space between text and buttons
+              const SizedBox(height: 16.0), // Adds space between text and buttons
               Container(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center, // Centers buttons horizontally
                   children: [
                     Expanded(
-                      child: Container(
+                      child: SizedBox(
                         height: 100,
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/outdoorTraining');
                           },
-                          child: Text("Venku, doma bez přístupu k posilovacím strojům"),
+                          child: const Text("Venku, doma bez přístupu k posilovacím strojům"),
                         ),
                       ),
                     ),
-                    SizedBox(width: 8.0), // Adds space between buttons
+                    const SizedBox(width: 8.0), // Adds space between buttons
                     Expanded(
-                      child: Container(
+                      child: SizedBox(
                         height: 100,
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/gymTraining');
                           },
-                          child: Text("V posilovně, doma s přístupem k posilovacím strojům"),
+                          child: const Text("V posilovně, doma s přístupem k posilovacím strojům"),
                         ),
                       ),
                     ),
@@ -84,45 +84,47 @@ class MainPage extends State<Mainwidget> {
 
 // Screen for outdoor/home training without machines
 class OutdoorTrainingScreen extends StatelessWidget {
+  const OutdoorTrainingScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Trénink venku nebo doma")),
+      appBar: AppBar(title: const Text("Trénink venku nebo doma")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               "Trénink venku, doma bez přístupu k posilovacím strojům",
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Container(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       height: 100,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pushNamed(context, '/PreMadeOutdoorTraining');
                         },
-                        child: Text("Předpřipravené tréninky"),
+                        child: const Text("Předpřipravené tréninky"),
                       ),
                     ),
                   ),
-                  SizedBox(width: 8.0),
+                  const SizedBox(width: 8.0),
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       height: 100,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pushNamed(context, '/FullListOutdoorTraining');
                         },
-                        child: Text("Seznam cviků"),
+                        child: const Text("Seznam cviků"),
                       ),
                     ),
                   ),
@@ -139,45 +141,47 @@ class OutdoorTrainingScreen extends StatelessWidget {
 
 // Screen for gym/home training with machines
 class GymTrainingScreen extends StatelessWidget {
+  const GymTrainingScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Trénink v posilovně")),
+      appBar: AppBar(title: const Text("Trénink v posilovně")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               "Trénink v posilovně, doma s přístupem k posilovacím strojům",
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Container(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       height: 100,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pushNamed(context, '/PreMadeGymTraining');
                         },
-                        child: Text("Předpřipravené tréninky"),
+                        child: const Text("Předpřipravené tréninky"),
                       ),
                     ),
                   ),
-                   SizedBox(width: 8.0),
+                   const SizedBox(width: 8.0),
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       height: 100,
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pushNamed(context, '/FullListGymTraining');
                         },
-                        child: Text("Seznam cviků"),
+                        child: const Text("Seznam cviků"),
                       ),
                     ),
                   ),
@@ -194,10 +198,12 @@ class GymTrainingScreen extends StatelessWidget {
 
 // Advanced Outdoor Training Screen
 class PreMadeOutdoorTraining extends StatelessWidget {
+  const PreMadeOutdoorTraining({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Předpřipravené tréninky")),
+      appBar: AppBar(title: const Text("Předpřipravené tréninky")),
       body: Stack(
         children: [
           // Back to home button
@@ -206,13 +212,13 @@ class PreMadeOutdoorTraining extends StatelessWidget {
             right: 16.0,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                textStyle: TextStyle(fontSize: 12.0),
+                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                textStyle: const TextStyle(fontSize: 12.0),
               ),
               onPressed: () {
                 Navigator.pushNamed(context, '/');
               },
-              child: Text("⌂"),
+              child: const Text("⌂"),
             ),
           ),
         ],
@@ -225,10 +231,12 @@ class PreMadeOutdoorTraining extends StatelessWidget {
 
 // Advanced Gym Training Screen
 class PreMadeGymTraining extends StatelessWidget {
+  const PreMadeGymTraining({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Předpřipravené tréninky")),
+      appBar: AppBar(title: const Text("Předpřipravené tréninky")),
       body: Stack(
         children: [
           // Back to home button
@@ -237,13 +245,13 @@ class PreMadeGymTraining extends StatelessWidget {
             right: 16.0,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                textStyle: TextStyle(fontSize: 12.0),
+                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                textStyle: const TextStyle(fontSize: 12.0),
               ),
               onPressed: () {
                 Navigator.pushNamed(context, '/');
               },
-              child: Text("⌂"),
+              child: const Text("⌂"),
             ),
           ),
         ],
@@ -254,10 +262,12 @@ class PreMadeGymTraining extends StatelessWidget {
 
 // Intermediate Outdoor Training Screen
 class FullListOutdoorTraining extends StatelessWidget {
+  const FullListOutdoorTraining({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Seznam cviků")),
+      appBar: AppBar(title: const Text("Seznam cviků")),
       body: Stack(
         children: [
           // Back to home button
@@ -266,13 +276,13 @@ class FullListOutdoorTraining extends StatelessWidget {
             right: 16.0,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                textStyle: TextStyle(fontSize: 12.0),
+                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                textStyle: const TextStyle(fontSize: 12.0),
               ),
               onPressed: () {
                 Navigator.pushNamed(context, '/');
               },
-              child: Text("⌂"),
+              child: const Text("⌂"),
             ),
           ),
         ],
@@ -283,10 +293,12 @@ class FullListOutdoorTraining extends StatelessWidget {
 
 // Intermediate Gym Training Screen
 class FullListGymTraining extends StatelessWidget {
+  const FullListGymTraining({super.key});
+
  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Seznam cviků")),
+      appBar: AppBar(title: const Text("Seznam cviků")),
       body: Stack(
         children: [
           // Back to home button
@@ -295,13 +307,52 @@ class FullListGymTraining extends StatelessWidget {
             right: 16.0,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                textStyle: TextStyle(fontSize: 12.0),
+                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                textStyle: const TextStyle(fontSize: 12.0),
               ),
               onPressed: () {
                 Navigator.pushNamed(context, '/');
               },
-              child: Text("⌂"),
+              child: const Text("⌂"),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ExerciseTile extends StatelessWidget {
+  final String exercise;
+  final String description;
+  final String tips;
+
+  const ExerciseTile({
+    required this.exercise,
+    required this.description,
+    required this.tips,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ExpansionTile(
+        title: Text(
+          exercise,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        leading: const Icon(Icons.fitness_center),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Description: $description"),
+                const SizedBox(height: 4.0),
+                Text("Tips: $tips"),
+              ],
             ),
           ),
         ],
