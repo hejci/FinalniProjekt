@@ -11,12 +11,12 @@ void main() {
   runApp(MaterialApp(
     home: const Mainwidget(),
     routes: {
-      '/outdoorTraining': (context) => OutdoorTrainingScreen(),
-      '/gymTraining': (context) => GymTrainingScreen(),
-      '/PreMadeOutdoorTraining': (context) => PreMadeOutdoorTraining(),
-      '/PreMadeGymTraining': (context) => PreMadeGymTraining(),
-      '/FullListOutdoorTraining': (context) => FullListOutdoorTraining(),
-      '/FullListGymTraining': (context) => FullListGymTraining(),
+      '/outdoorTraining': (context) => const OutdoorTrainingScreen(),
+      '/gymTraining': (context) => const GymTrainingScreen(),
+      '/PreMadeOutdoorTraining': (context) => const PreMadeOutdoorTraining(),
+      '/PreMadeGymTraining': (context) => const PreMadeGymTraining(),
+      '/FullListOutdoorTraining': (context) => const FullListOutdoorTraining(),
+      '/FullListGymTraining': (context) => const FullListGymTraining(),
     },
   ));
 }
@@ -267,10 +267,29 @@ class FullListOutdoorTraining extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Seznam cviků")),
+      appBar: AppBar(title: const Text("Seznam cviků - Venku")),
       body: Stack(
         children: [
-          // Back to home button
+          ListView(
+            padding: const EdgeInsets.all(8.0),
+            children: [
+              ExerciseTile(
+                exercise: "Push-Ups",
+                description: "A basic upper-body strength exercise. Targets chest, shoulders, and triceps.",
+                tips: "Keep your body straight and don't let your hips sag.",
+              ),
+              ExerciseTile(
+                exercise: "Planks",
+                description: "Core strengthening exercise. Engage your abs to hold the position.",
+                tips: "Keep your body in a straight line from head to heels.",
+              ),
+              ExerciseTile(
+                exercise: "Bodyweight Squats",
+                description: "A lower-body exercise focusing on quads, hamstrings, and glutes.",
+                tips: "Keep your knees tracking over your toes and maintain an upright posture.",
+              ),
+            ],
+          ),
           Positioned(
             top: 16.0,
             right: 16.0,
@@ -295,13 +314,32 @@ class FullListOutdoorTraining extends StatelessWidget {
 class FullListGymTraining extends StatelessWidget {
   const FullListGymTraining({super.key});
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Seznam cviků")),
+      appBar: AppBar(title: const Text("Seznam cviků - Posilovna")),
       body: Stack(
         children: [
-          // Back to home button
+          ListView(
+            padding: const EdgeInsets.all(8.0),
+            children: const [
+              ExerciseTile(
+                exercise: "Bench Press",
+                description: "A compound upper-body exercise for chest, shoulders, and triceps.",
+                tips: "Keep your wrists straight and lower the bar to your chest in control.",
+              ),
+              ExerciseTile(
+                exercise: "Deadlifts",
+                description: "A full-body exercise that targets the posterior chain.",
+                tips: "Maintain a neutral spine and engage your core throughout the lift.",
+              ),
+              ExerciseTile(
+                exercise: "Lat Pulldown",
+                description: "An exercise for building back strength and width.",
+                tips: "Avoid pulling with your arms; focus on using your back muscles.",
+              ),
+            ],
+          ),
           Positioned(
             top: 16.0,
             right: 16.0,
@@ -331,8 +369,8 @@ class ExerciseTile extends StatelessWidget {
     required this.exercise,
     required this.description,
     required this.tips,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
