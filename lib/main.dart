@@ -413,9 +413,41 @@ class PreMadeGymTraining extends StatelessWidget {
 }
 
 
-// Intermediate Outdoor Training Screen
-class FullListOutdoorTraining extends StatelessWidget {
+class FullListOutdoorTraining extends StatefulWidget {
   const FullListOutdoorTraining({super.key});
+
+  @override
+  _FullListOutdoorTrainingState createState() => _FullListOutdoorTrainingState();
+}
+
+class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
+  List<ExerciseTile> exercises = [
+    ExerciseTile(
+      exercise: "Push-Ups",
+      description: "A basic upper-body strength exercise. Targets chest, shoulders, and triceps.",
+      form: "",
+    ),
+    ExerciseTile(
+      exercise: "Planks",
+      description: "Core strengthening exercise. Engage your abs to hold the position.",
+      form: "",
+    ),
+    ExerciseTile(
+      exercise: "Bodyweight Squats",
+      description: "A lower-body exercise focusing on quads, hamstrings, and glutes.",
+      form: "",
+    ),
+  ];
+
+  void _addExercise(String exercise, String description, String form) {
+    setState(() {
+      exercises.add(ExerciseTile(
+        exercise: exercise,
+        description: description,
+        form: form,
+      ));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -425,23 +457,7 @@ class FullListOutdoorTraining extends StatelessWidget {
         children: [
           ListView(
             padding: const EdgeInsets.all(8.0),
-            children: [
-              ExerciseTile(
-                exercise: "Push-Ups",
-                description: "A basic upper-body strength exercise. Targets chest, shoulders, and triceps.",
-                tips: "Keep your body straight and don't let your hips sag.",
-              ),
-              ExerciseTile(
-                exercise: "Planks",
-                description: "Core strengthening exercise. Engage your abs to hold the position.",
-                tips: "Keep your body in a straight line from head to heels.",
-              ),
-              ExerciseTile(
-                exercise: "Bodyweight Squats",
-                description: "A lower-body exercise focusing on quads, hamstrings, and glutes.",
-                tips: "Keep your knees tracking over your toes and maintain an upright posture.",
-              ),
-            ],
+            children: exercises,
           ),
           Positioned(
             top: 16.0,
@@ -457,15 +473,62 @@ class FullListOutdoorTraining extends StatelessWidget {
               child: const Text("⌂"),
             ),
           ),
+          Positioned(
+            bottom: 16.0,
+            right: 16.0,
+            child: ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AddExerciseDialog(onAdd: _addExercise);
+                  },
+                );
+              },
+              child: const Text("Add Exercise"),
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-// Intermediate Gym Training Screen
-class FullListGymTraining extends StatelessWidget {
+class FullListGymTraining extends StatefulWidget {
   const FullListGymTraining({super.key});
+
+  @override
+  _FullListGymTrainingState createState() => _FullListGymTrainingState();
+}
+
+class _FullListGymTrainingState extends State<FullListGymTraining> {
+  List<ExerciseTile> exercises = [
+    ExerciseTile(
+      exercise: "Bench Press",
+      description: "A compound upper-body exercise for chest, shoulders, and triceps.",
+      form: "",
+    ),
+    ExerciseTile(
+      exercise: "Deadlifts",
+      description: "A full-body exercise that targets the posterior chain.",
+      form: "",
+    ),
+    ExerciseTile(
+      exercise: "Lat Pulldown",
+      description: "An exercise for building back strength and width.",
+      form: "",
+    ),
+  ];
+
+  void _addExercise(String exercise, String description, String form) {
+    setState(() {
+      exercises.add(ExerciseTile(
+        exercise: exercise,
+        description: description,
+        form: form,
+      ));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -475,23 +538,7 @@ class FullListGymTraining extends StatelessWidget {
         children: [
           ListView(
             padding: const EdgeInsets.all(8.0),
-            children: const [
-              ExerciseTile(
-                exercise: "Bench Press",
-                description: "A compound upper-body exercise for chest, shoulders, and triceps.",
-                tips: "Keep your wrists straight and lower the bar to your chest in control.",
-              ),
-              ExerciseTile(
-                exercise: "Deadlifts",
-                description: "A full-body exercise that targets the posterior chain.",
-                tips: "Maintain a neutral spine and engage your core throughout the lift.",
-              ),
-              ExerciseTile(
-                exercise: "Lat Pulldown",
-                description: "An exercise for building back strength and width.",
-                tips: "Avoid pulling with your arms; focus on using your back muscles.",
-              ),
-            ],
+            children: exercises,
           ),
           Positioned(
             top: 16.0,
@@ -507,8 +554,81 @@ class FullListGymTraining extends StatelessWidget {
               child: const Text("⌂"),
             ),
           ),
+          Positioned(
+            bottom: 16.0,
+            right: 16.0,
+            child: ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AddExerciseDialog(onAdd: _addExercise);
+                  },
+                );
+              },
+              child: const Text("+"),
+            ),
+          ),
         ],
       ),
+    );
+  }
+}
+
+class AddExerciseDialog extends StatefulWidget {
+  final Function(String, String, String) onAdd;
+
+  const AddExerciseDialog({required this.onAdd, super.key});
+
+  @override
+  _AddExerciseDialogState createState() => _AddExerciseDialogState();
+}
+
+class _AddExerciseDialogState extends State<AddExerciseDialog> {
+  final TextEditingController _exerciseController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _formController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Add New Exercise'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _exerciseController,
+            decoration: const InputDecoration(labelText: 'Exercise Name'),
+          ),
+          TextField(
+            controller: _descriptionController,
+            decoration: const InputDecoration(labelText: 'Description'),
+          ),
+          TextField(
+            controller: _formController,
+            decoration: const InputDecoration(labelText: 'Correct Form'),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            widget.onAdd(
+              _exerciseController.text,
+              _descriptionController.text,
+              _formController.text,
+            );
+            Navigator.pop(context);
+          },
+          child: const Text('Add'),
+        ),
+      ],
     );
   }
 }
@@ -516,12 +636,12 @@ class FullListGymTraining extends StatelessWidget {
 class ExerciseTile extends StatelessWidget {
   final String exercise;
   final String description;
-  final String tips;
+  final String form;
 
   const ExerciseTile({
     required this.exercise,
     required this.description,
-    required this.tips,
+    required this.form,
     super.key,
   });
 
@@ -542,7 +662,7 @@ class ExerciseTile extends StatelessWidget {
               children: [
                 Text("Description: $description"),
                 const SizedBox(height: 4.0),
-                Text("Tips: $tips"),
+                Text("Form: $form"),
               ],
             ),
           ),
