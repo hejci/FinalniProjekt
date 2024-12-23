@@ -13,8 +13,8 @@ void main() {
     routes: {
       '/outdoorTraining': (context) => const OutdoorTrainingScreen(),
       '/gymTraining': (context) => const GymTrainingScreen(),
-      '/PreMadeOutdoorTraining': (context) => const PreMadeOutdoorTraining(),
-      '/PreMadeGymTraining': (context) => const PreMadeGymTraining(),
+      '/PreMadeOutdoorTraining': (context) => PreMadeOutdoorTraining(),
+      '/PreMadeGymTraining': (context) =>  PreMadeGymTraining(),
       '/FullListOutdoorTraining': (context) => const FullListOutdoorTraining(),
       '/FullListGymTraining': (context) => const FullListGymTraining(),
     },
@@ -195,70 +195,223 @@ class GymTrainingScreen extends StatelessWidget {
   }
 }
 
+class WorkoutPlan {
+  final String name;
+  final Map<String, List<String>> sections; // e.g., "Warm-Up": ["Exercise 1", "Exercise 2"]
+
+  WorkoutPlan({
+    required this.name,
+    required this.sections,
+  });
+}
+
 
 // Advanced Outdoor Training Screen
 class PreMadeOutdoorTraining extends StatelessWidget {
-  const PreMadeOutdoorTraining({super.key});
-
   @override
   Widget build(BuildContext context) {
+    final List<WorkoutPlan> workoutPlans = [
+      WorkoutPlan(
+        name: "Random 1",
+        sections: {
+          "Warm-Up": ["Jumping Jacks - 3 min", "Dynamic Stretching - 5 min"],
+          "Main Workout": [
+            "Push-Ups - 3 sets of 12 reps",
+            "Bodyweight Squats - 3 sets of 15 reps",
+            "Plank - 3 sets of 30 seconds"
+          ],
+          "Cool-Down": ["Static Stretching - 5 min"],
+        },
+      ),
+      WorkoutPlan(
+        name: "Random 2",
+        sections: {
+          "Warm-Up": ["Light Jog - 5 min", "Dynamic Stretching - 5 min"],
+          "Main Workout": [
+            "Mountain Climbers - 4 sets of 30 seconds",
+            "Burpees - 3 sets of 10 reps",
+            "Jump Squats - 3 sets of 12 reps"
+          ],
+          "Cool-Down": ["Static Stretching - 5 min"],
+        },
+      ),
+    ];
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Předpřipravené tréninky")),
-      body: Stack(
+      appBar: AppBar(
+        title: const Text("Pre-Made Outdoor Training"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home),
+            onPressed: () => Navigator.pushNamed(context, '/'),
+          ),
+        ],
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemCount: workoutPlans.length,
+        itemBuilder: (context, index) {
+          final workout = workoutPlans[index];
+          return _buildWorkoutCard(context, workout);
+        },
+      ),
+    );
+  }
+
+  Widget _buildWorkoutCard(BuildContext context, WorkoutPlan workout) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      child: ExpansionTile(
+        title: Text(
+          workout.name,
+          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        ),
         children: [
-          // Back to home button
-          Positioned(
-            top: 16.0,
-            right: 16.0,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                textStyle: const TextStyle(fontSize: 12.0),
+          Column(
+            children: workout.sections.entries.map((entry) {
+              return ListTile(
+                title: Text(entry.key,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: entry.value
+                      .map((exercise) => Text("- $exercise"))
+                      .toList(),
+                ),
+              );
+            }).toList(),
+          ),
+          const Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton.icon(
+                onPressed: () {
+                  // Bookmark logic
+                },
+                icon: const Icon(Icons.bookmark_outline),
+                label: const Text("Bookmark"),
               ),
-              onPressed: () {
-                Navigator.pushNamed(context, '/');
-              },
-              child: const Text("⌂"),
-            ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  // Start workout logic
+                },
+                icon: const Icon(Icons.play_arrow),
+                label: const Text("Start Workout"),
+              ),
+            ],
           ),
         ],
       ),
     );
-
   }
 }
+
 
 
 // Advanced Gym Training Screen
 class PreMadeGymTraining extends StatelessWidget {
-  const PreMadeGymTraining({super.key});
-
   @override
   Widget build(BuildContext context) {
+    final List<WorkoutPlan> workoutPlans = [
+      WorkoutPlan(
+        name: "Neco 1",
+        sections: {
+          "Warm-Up": ["Treadmill - 5 min", "Dynamic Stretching - 5 min"],
+          "Main Workout": [
+            "Bench Press - 3 sets of 10 reps",
+            "Leg Press - 3 sets of 12 reps",
+            "Seated Rows - 3 sets of 15 reps"
+          ],
+          "Cool-Down": ["Static Stretching - 5 min"],
+        },
+      ),
+      WorkoutPlan(
+        name: "Neco 2",
+        sections: {
+          "Warm-Up": ["Bike - 5 min", "Dynamic Stretching - 5 min"],
+          "Main Workout": [
+            "Deadlifts - 3 sets of 8 reps",
+            "Squats - 3 sets of 10 reps",
+            "Overhead Press - 3 sets of 12 reps"
+          ],
+          "Cool-Down": ["Foam Rolling - 5 min"],
+        },
+      ),
+    ];
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Předpřipravené tréninky")),
-      body: Stack(
+      appBar: AppBar(
+        title: const Text("Pre-Made Gym Training"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home),
+            onPressed: () => Navigator.pushNamed(context, '/'),
+          ),
+        ],
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemCount: workoutPlans.length,
+        itemBuilder: (context, index) {
+          final workout = workoutPlans[index];
+          return _buildWorkoutCard(context, workout);
+        },
+      ),
+    );
+  }
+
+  Widget _buildWorkoutCard(BuildContext context, WorkoutPlan workout) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      child: ExpansionTile(
+        title: Text(
+          workout.name,
+          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        ),
         children: [
-          // Back to home button
-          Positioned(
-            top: 16.0,
-            right: 16.0,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                textStyle: const TextStyle(fontSize: 12.0),
+          Column(
+            children: workout.sections.entries.map((entry) {
+              return ListTile(
+                title: Text(entry.key,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: entry.value
+                      .map((exercise) => Text("- $exercise"))
+                      .toList(),
+                ),
+              );
+            }).toList(),
+          ),
+          const Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton.icon(
+                onPressed: () {
+                  // Bookmark logic
+                },
+                icon: const Icon(Icons.bookmark_outline),
+                label: const Text("Bookmark"),
               ),
-              onPressed: () {
-                Navigator.pushNamed(context, '/');
-              },
-              child: const Text("⌂"),
-            ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  // Start workout logic
+                },
+                icon: const Icon(Icons.play_arrow),
+                label: const Text("Start Workout"),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 }
+
 
 // Intermediate Outdoor Training Screen
 class FullListOutdoorTraining extends StatelessWidget {
