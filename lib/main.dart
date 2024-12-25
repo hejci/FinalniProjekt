@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_emoji/flutter_emoji.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 var parser = EmojiParser();
 var home = Emoji('home', '🏠︎');
@@ -15,8 +17,9 @@ void main() {
       '/gymTraining': (context) => const GymTrainingScreen(),
       '/PreMadeOutdoorTraining': (context) => PreMadeOutdoorTraining(),
       '/PreMadeGymTraining': (context) =>  PreMadeGymTraining(),
-      '/FullListOutdoorTraining': (context) => const FullListOutdoorTraining(),
+      '/FullListOutdoorTraining': (context) => FullListOutdoorTraining(),
       '/FullListGymTraining': (context) => const FullListGymTraining(),
+
     },
   ));
 }
@@ -206,6 +209,7 @@ class WorkoutPlan {
 }
 
 
+
 // Advanced Outdoor Training Screen
 class PreMadeOutdoorTraining extends StatelessWidget {
   @override
@@ -214,25 +218,23 @@ class PreMadeOutdoorTraining extends StatelessWidget {
       WorkoutPlan(
         name: "Random 1",
         sections: {
-          "Warm-Up": ["Jumping Jacks - 3 min", "Dynamic Stretching - 5 min"],
-          "Main Workout": [
+          "Workout": [
+            "Warm-up - 10 minutes",
             "Push-Ups - 3 sets of 12 reps",
             "Bodyweight Squats - 3 sets of 15 reps",
             "Plank - 3 sets of 30 seconds"
           ],
-          "Cool-Down": ["Static Stretching - 5 min"],
         },
       ),
       WorkoutPlan(
         name: "Random 2",
         sections: {
-          "Warm-Up": ["Light Jog - 5 min", "Dynamic Stretching - 5 min"],
-          "Main Workout": [
+          "Workout": [
+            "Warm-up - 10 minutes",
             "Mountain Climbers - 4 sets of 30 seconds",
             "Burpees - 3 sets of 10 reps",
             "Jump Squats - 3 sets of 12 reps"
           ],
-          "Cool-Down": ["Static Stretching - 5 min"],
         },
       ),
     ];
@@ -318,25 +320,23 @@ class PreMadeGymTraining extends StatelessWidget {
       WorkoutPlan(
         name: "Neco 1",
         sections: {
-          "Warm-Up": ["Treadmill - 5 min", "Dynamic Stretching - 5 min"],
-          "Main Workout": [
+          "Workout": [
+            "Warm-up - 10 minutes",
             "Bench Press - 3 sets of 10 reps",
             "Leg Press - 3 sets of 12 reps",
             "Seated Rows - 3 sets of 15 reps"
           ],
-          "Cool-Down": ["Static Stretching - 5 min"],
         },
       ),
       WorkoutPlan(
         name: "Neco 2",
         sections: {
-          "Warm-Up": ["Bike - 5 min", "Dynamic Stretching - 5 min"],
-          "Main Workout": [
+          "Workout": [
+            "Warm-up - 10 minutes",
             "Deadlifts - 3 sets of 8 reps",
             "Squats - 3 sets of 10 reps",
             "Overhead Press - 3 sets of 12 reps"
           ],
-          "Cool-Down": ["Foam Rolling - 5 min"],
         },
       ),
     ];
@@ -485,7 +485,7 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
                   },
                 );
               },
-              child: const Text("Add Exercise"),
+              child: const Text("+"),
             ),
           ),
         ],
@@ -575,6 +575,63 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
   }
 }
 
+
+class ExerciseTile extends StatelessWidget {
+  final String exercise;
+  final String description;
+  final String form;
+
+  const ExerciseTile({
+    required this.exercise,
+    required this.description,
+    required this.form,
+    super.key,
+  });
+
+  factory ExerciseTile.fromJson(Map<String, dynamic> json) {
+    return ExerciseTile(
+      exercise: json['exercise'],
+      description: json['description'],
+      form: json['form'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'exercise': exercise,
+      'description': description,
+      'form': form,
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ExpansionTile(
+        title: Text(
+          exercise,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        leading: const Icon(Icons.fitness_center),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Description: $description"),
+                const SizedBox(height: 4.0),
+                Text("Form: $form"),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
 class AddExerciseDialog extends StatefulWidget {
   final Function(String, String, String) onAdd;
 
@@ -629,45 +686,6 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
           child: const Text('Add'),
         ),
       ],
-    );
-  }
-}
-
-class ExerciseTile extends StatelessWidget {
-  final String exercise;
-  final String description;
-  final String form;
-
-  const ExerciseTile({
-    required this.exercise,
-    required this.description,
-    required this.form,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ExpansionTile(
-        title: Text(
-          exercise,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        leading: const Icon(Icons.fitness_center),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Description: $description"),
-                const SizedBox(height: 4.0),
-                Text("Form: $form"),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
