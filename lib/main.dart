@@ -1,27 +1,67 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_emoji/flutter_emoji.dart';
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 var parser = EmojiParser();
 var home = Emoji('home', '🏠︎');
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final themeProvider = ThemeProvider();
+  await themeProvider.loadTheme();
+  
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => themeProvider,
+      child: const MyApp(),
+    ),
+  );
+}
 
-  runApp(MaterialApp(
-    home: const Mainwidget(),
-    routes: {
-      '/outdoorTraining': (context) => const OutdoorTrainingScreen(),
-      '/gymTraining': (context) => const GymTrainingScreen(),
-      '/PreMadeOutdoorTraining': (context) => PreMadeOutdoorTraining(),
-      '/PreMadeGymTraining': (context) =>  PreMadeGymTraining(),
-      '/FullListOutdoorTraining': (context) => FullListOutdoorTraining(),
-      '/FullListGymTraining': (context) => const FullListGymTraining(),
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-    },
-  ));
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    return MaterialApp(
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: themeProvider.themeMode,
+      home: const Mainwidget(),
+      routes: {
+        '/outdoorTraining': (context) => const OutdoorTrainingScreen(),
+        '/gymTraining': (context) => const GymTrainingScreen(),
+        '/PreMadeOutdoorTraining': (context) => PreMadeOutdoorTraining(),
+        '/PreMadeGymTraining': (context) => PreMadeGymTraining(),
+        '/FullListOutdoorTraining': (context) => FullListOutdoorTraining(),
+        '/FullListGymTraining': (context) => const FullListGymTraining(),
+      },
+    );
+  }
+}
+
+class ThemeProvider with ChangeNotifier {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  ThemeMode get themeMode => _themeMode;
+
+  Future<void> toggleTheme(bool isDarkMode) async {
+    _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isDarkMode', isDarkMode);
+  }
+
+  Future<void> loadTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isDarkMode = prefs.getBool('isDarkMode') ?? false;
+    _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
+    notifyListeners();
+  }
 }
 
 class Mainwidget extends StatefulWidget {
@@ -34,22 +74,34 @@ class Mainwidget extends StatefulWidget {
 class MainPage extends State<Mainwidget> {
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Choose Training Mode"),
+        actions: [
+          Switch(
+            value: themeProvider.themeMode == ThemeMode.dark,
+            onChanged: (value) {
+              themeProvider.toggleTheme(value);
+            },
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Center(
-          child: Column( // Stacks the text and buttons vertically
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Add text on top
               const Text(
-                "Kde budeš trénovat:",
+                "Where will you train:",
                 style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 16.0), // Adds space between text and buttons
+              const SizedBox(height: 16.0),
               Container(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center, // Centers buttons horizontally
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
                       child: SizedBox(
@@ -58,11 +110,11 @@ class MainPage extends State<Mainwidget> {
                           onPressed: () {
                             Navigator.pushNamed(context, '/outdoorTraining');
                           },
-                          child: const Text("Venku, doma bez přístupu k posilovacím strojům"),
+                          child: const Text("Outdoors or at home without gym equipment"),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8.0), // Adds space between buttons
+                    const SizedBox(width: 8.0),
                     Expanded(
                       child: SizedBox(
                         height: 100,
@@ -70,7 +122,7 @@ class MainPage extends State<Mainwidget> {
                           onPressed: () {
                             Navigator.pushNamed(context, '/gymTraining');
                           },
-                          child: const Text("V posilovně, doma s přístupem k posilovacím strojům"),
+                          child: const Text("In a gym or at home with gym equipment"),
                         ),
                       ),
                     ),
@@ -200,7 +252,7 @@ class GymTrainingScreen extends StatelessWidget {
 
 class WorkoutPlan {
   final String name;
-  final Map<String, List<String>> sections; // e.g., "Warm-Up": ["Exercise 1", "Exercise 2"]
+  final Map<String, List<String>> sections; 
 
   WorkoutPlan({
     required this.name,
