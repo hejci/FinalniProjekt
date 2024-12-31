@@ -263,34 +263,66 @@ class WorkoutPlan {
 
 
 // Advanced Outdoor Training Screen
-class PreMadeOutdoorTraining extends StatelessWidget {
+class PreMadeOutdoorTraining extends StatefulWidget {
+  @override
+  _PreMadeOutdoorTrainingState createState() => _PreMadeOutdoorTrainingState();
+}
+
+class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
+  final List<WorkoutPlan> workoutPlans = [
+    WorkoutPlan(
+      name: "Random 1",
+      sections: {
+        "Workout": [
+          "Warm-up - 10 minutes",
+          "Push-Ups - 3 sets of 12 reps",
+          "Bodyweight Squats - 3 sets of 15 reps",
+          "Plank - 3 sets of 30 seconds",
+        ],
+      },
+    ),
+    WorkoutPlan(
+      name: "Random 2",
+      sections: {
+        "Workout": [
+          "Warm-up - 10 minutes",
+          "Mountain Climbers - 4 sets of 30 seconds",
+          "Burpees - 3 sets of 10 reps",
+          "Jump Squats - 3 sets of 12 reps",
+        ],
+      },
+    ),
+  ];
+
+  late Set<String> bookmarkedWorkouts;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBookmarks();
+  }
+
+  Future<void> _loadBookmarks() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      bookmarkedWorkouts = prefs.getStringList('bookmarkedWorkouts')?.toSet() ?? {};
+    });
+  }
+
+  Future<void> _toggleBookmark(String workoutName) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      if (bookmarkedWorkouts.contains(workoutName)) {
+        bookmarkedWorkouts.remove(workoutName);
+      } else {
+        bookmarkedWorkouts.add(workoutName);
+      }
+      prefs.setStringList('bookmarkedWorkouts', bookmarkedWorkouts.toList());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<WorkoutPlan> workoutPlans = [
-      WorkoutPlan(
-        name: "Random 1",
-        sections: {
-          "Workout": [
-            "Warm-up - 10 minutes",
-            "Push-Ups - 3 sets of 12 reps",
-            "Bodyweight Squats - 3 sets of 15 reps",
-            "Plank - 3 sets of 30 seconds"
-          ],
-        },
-      ),
-      WorkoutPlan(
-        name: "Random 2",
-        sections: {
-          "Workout": [
-            "Warm-up - 10 minutes",
-            "Mountain Climbers - 4 sets of 30 seconds",
-            "Burpees - 3 sets of 10 reps",
-            "Jump Squats - 3 sets of 12 reps"
-          ],
-        },
-      ),
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Pre-Made Outdoor Training"),
@@ -313,86 +345,119 @@ class PreMadeOutdoorTraining extends StatelessWidget {
   }
 
   Widget _buildWorkoutCard(BuildContext context, WorkoutPlan workout) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      child: ExpansionTile(
-        title: Text(
-          workout.name,
-          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+  final isBookmarked = bookmarkedWorkouts.contains(workout.name);
+  return Card(
+    margin: const EdgeInsets.symmetric(vertical: 8.0),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+    child: ExpansionTile(
+      leading: IconButton(
+        icon: Icon(
+          isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
+          color: isBookmarked ? Colors.blue : null,
         ),
-        children: [
-          Column(
-            children: workout.sections.entries.map((entry) {
-              return ListTile(
-                title: Text(entry.key,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: entry.value
-                      .map((exercise) => Text("- $exercise"))
-                      .toList(),
-                ),
-              );
-            }).toList(),
-          ),
-          const Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton.icon(
-                onPressed: () {
-                  // Bookmark logic
-                },
-                icon: const Icon(Icons.bookmark_outline),
-                label: const Text("Bookmark"),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  // Start workout logic
-                },
-                icon: const Icon(Icons.play_arrow),
-                label: const Text("Start Workout"),
-              ),
-            ],
-          ),
-        ],
+        onPressed: () => _toggleBookmark(workout.name),
       ),
-    );
+      title: Text(
+        workout.name,
+        style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+      ),
+      children: [
+        Column(
+          children: workout.sections.entries.map((entry) {
+            return ListTile(
+              title: Text(entry.key,
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: entry.value
+                    .map((exercise) => Text("- $exercise"))
+                    .toList(),
+              ),
+            );
+          }).toList(),
+        ),
+        const Divider(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () {
+                // Start workout logic
+              },
+              icon: const Icon(Icons.play_arrow),
+              label: const Text("Start Workout"),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
   }
 }
 
 
 
 // Advanced Gym Training Screen
-class PreMadeGymTraining extends StatelessWidget {
+class PreMadeGymTraining extends StatefulWidget {
+  @override
+  _PreMadeGymTrainingState createState() => _PreMadeGymTrainingState();
+}
+
+class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
+  final List<WorkoutPlan> workoutPlans = [
+    WorkoutPlan(
+      name: "Neco 1",
+      sections: {
+        "Workout": [
+          "Warm-up - 10 minutes",
+          "Bench Press - 3 sets of 10 reps",
+          "Leg Press - 3 sets of 12 reps",
+          "Seated Rows - 3 sets of 15 reps",
+        ],
+      },
+    ),
+    WorkoutPlan(
+      name: "Neco 2",
+      sections: {
+        "Workout": [
+          "Warm-up - 10 minutes",
+          "Deadlifts - 3 sets of 8 reps",
+          "Squats - 3 sets of 10 reps",
+          "Overhead Press - 3 sets of 12 reps",
+        ],
+      },
+    ),
+  ];
+
+  late Set<String> bookmarkedWorkouts;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBookmarks();
+  }
+
+  Future<void> _loadBookmarks() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      bookmarkedWorkouts = prefs.getStringList('bookmarkedWorkouts')?.toSet() ?? {};
+    });
+  }
+
+  Future<void> _toggleBookmark(String workoutName) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      if (bookmarkedWorkouts.contains(workoutName)) {
+        bookmarkedWorkouts.remove(workoutName);
+      } else {
+        bookmarkedWorkouts.add(workoutName);
+      }
+      prefs.setStringList('bookmarkedWorkouts', bookmarkedWorkouts.toList());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<WorkoutPlan> workoutPlans = [
-      WorkoutPlan(
-        name: "Neco 1",
-        sections: {
-          "Workout": [
-            "Warm-up - 10 minutes",
-            "Bench Press - 3 sets of 10 reps",
-            "Leg Press - 3 sets of 12 reps",
-            "Seated Rows - 3 sets of 15 reps"
-          ],
-        },
-      ),
-      WorkoutPlan(
-        name: "Neco 2",
-        sections: {
-          "Workout": [
-            "Warm-up - 10 minutes",
-            "Deadlifts - 3 sets of 8 reps",
-            "Squats - 3 sets of 10 reps",
-            "Overhead Press - 3 sets of 12 reps"
-          ],
-        },
-      ),
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Pre-Made Gym Training"),
@@ -415,53 +480,54 @@ class PreMadeGymTraining extends StatelessWidget {
   }
 
   Widget _buildWorkoutCard(BuildContext context, WorkoutPlan workout) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      child: ExpansionTile(
-        title: Text(
-          workout.name,
-          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+  final isBookmarked = bookmarkedWorkouts.contains(workout.name);
+  return Card(
+    margin: const EdgeInsets.symmetric(vertical: 8.0),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+    child: ExpansionTile(
+      leading: IconButton(
+        icon: Icon(
+          isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
+          color: isBookmarked ? Colors.blue : null,
         ),
-        children: [
-          Column(
-            children: workout.sections.entries.map((entry) {
-              return ListTile(
-                title: Text(entry.key,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: entry.value
-                      .map((exercise) => Text("- $exercise"))
-                      .toList(),
-                ),
-              );
-            }).toList(),
-          ),
-          const Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton.icon(
-                onPressed: () {
-                  // Bookmark logic
-                },
-                icon: const Icon(Icons.bookmark_outline),
-                label: const Text("Bookmark"),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  // Start workout logic
-                },
-                icon: const Icon(Icons.play_arrow),
-                label: const Text("Start Workout"),
-              ),
-            ],
-          ),
-        ],
+        onPressed: () => _toggleBookmark(workout.name),
       ),
-    );
-  }
+      title: Text(
+        workout.name,
+        style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+      ),
+      children: [
+        Column(
+          children: workout.sections.entries.map((entry) {
+            return ListTile(
+              title: Text(entry.key,
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: entry.value
+                    .map((exercise) => Text("- $exercise"))
+                    .toList(),
+              ),
+            );
+          }).toList(),
+        ),
+        const Divider(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () {
+                // Start workout logic
+              },
+              icon: const Icon(Icons.play_arrow),
+              label: const Text("Start Workout"),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
 }
 
 
