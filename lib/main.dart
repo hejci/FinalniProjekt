@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_emoji/flutter_emoji.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
 
 var parser = EmojiParser();
 var home = Emoji('home', '🏠︎');
@@ -11,7 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
-  
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => themeProvider,
@@ -43,17 +44,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ThemeProvider with ChangeNotifier {
+class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
 
   ThemeMode get themeMode => _themeMode;
 
-  Future<void> toggleTheme(bool isDarkMode) async {
+  void toggleTheme(bool isDarkMode) async {
     _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
     notifyListeners();
-
     final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isDarkMode', isDarkMode);
+    await prefs.setBool('isDarkMode', isDarkMode);
   }
 
   Future<void> loadTheme() async {
@@ -539,23 +539,56 @@ class FullListOutdoorTraining extends StatefulWidget {
 }
 
 class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
-  List<ExerciseTile> exercises = [
-    ExerciseTile(
-      exercise: "Push-Ups",
-      description: "A basic upper-body strength exercise. Targets chest, shoulders, and triceps.",
-      form: "",
-    ),
-    ExerciseTile(
-      exercise: "Planks",
-      description: "Core strengthening exercise. Engage your abs to hold the position.",
-      form: "",
-    ),
-    ExerciseTile(
-      exercise: "Bodyweight Squats",
-      description: "A lower-body exercise focusing on quads, hamstrings, and glutes.",
-      form: "",
-    ),
-  ];
+  List<ExerciseTile> exercises = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadExercises();
+  }
+
+  Future<void> _loadExercises() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedData = prefs.getString('outdoor_exercises');
+    if (savedData != null) {
+      final List<dynamic> decodedData = jsonDecode(savedData);
+      setState(() {
+        exercises = decodedData.map((data) => ExerciseTile.fromJson(data)).toList();
+      });
+    } else {
+      _setDefaultExercises();
+    }
+  }
+
+  // Set default exercises
+  void _setDefaultExercises() {
+    setState(() {
+      exercises = [
+        ExerciseTile(
+          exercise: "Push-Ups",
+          description: "A basic upper-body strength exercise. Targets chest, shoulders, and triceps.",
+          form: "",
+        ),
+        ExerciseTile(
+          exercise: "Planks",
+          description: "Core strengthening exercise. Engage your abs to hold the position.",
+          form: "",
+        ),
+        ExerciseTile(
+          exercise: "Bodyweight Squats",
+          description: "A lower-body exercise focusing on quads, hamstrings, and glutes.",
+          form: "",
+        ),
+      ];
+    });
+    _saveExercises();
+  }
+
+  Future<void> _saveExercises() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<Map<String, dynamic>> data = exercises.map((exercise) => exercise.toJson()).toList();
+    await prefs.setString('outdoor_exercises', jsonEncode(data));
+  }
 
   void _addExercise(String exercise, String description, String form) {
     setState(() {
@@ -564,6 +597,7 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
         description: description,
         form: form,
       ));
+      _saveExercises();
     });
   }
 
@@ -581,10 +615,6 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
             top: 16.0,
             right: 16.0,
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                textStyle: const TextStyle(fontSize: 12.0),
-              ),
               onPressed: () {
                 Navigator.pushNamed(context, '/');
               },
@@ -620,23 +650,56 @@ class FullListGymTraining extends StatefulWidget {
 }
 
 class _FullListGymTrainingState extends State<FullListGymTraining> {
-  List<ExerciseTile> exercises = [
-    ExerciseTile(
-      exercise: "Bench Press",
-      description: "A compound upper-body exercise for chest, shoulders, and triceps.",
-      form: "",
-    ),
-    ExerciseTile(
-      exercise: "Deadlifts",
-      description: "A full-body exercise that targets the posterior chain.",
-      form: "",
-    ),
-    ExerciseTile(
-      exercise: "Lat Pulldown",
-      description: "An exercise for building back strength and width.",
-      form: "",
-    ),
-  ];
+  List<ExerciseTile> exercises = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadExercises();
+  }
+
+  Future<void> _loadExercises() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedData = prefs.getString('gym_exercises');
+    if (savedData != null) {
+      final List<dynamic> decodedData = jsonDecode(savedData);
+      setState(() {
+        exercises = decodedData.map((data) => ExerciseTile.fromJson(data)).toList();
+      });
+    } else {
+      _setDefaultExercises();
+    }
+  }
+
+  // Set default exercises for gym training
+  void _setDefaultExercises() {
+    setState(() {
+      exercises = [
+        ExerciseTile(
+          exercise: "Bench Press",
+          description: "A compound upper-body exercise for chest, shoulders, and triceps.",
+          form: "",
+        ),
+        ExerciseTile(
+          exercise: "Deadlifts",
+          description: "A full-body exercise that targets the posterior chain.",
+          form: "",
+        ),
+        ExerciseTile(
+          exercise: "Lat Pulldown",
+          description: "An exercise for building back strength and width.",
+          form: "",
+        ),
+      ];
+    });
+    _saveExercises();
+  }
+
+  Future<void> _saveExercises() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<Map<String, dynamic>> data = exercises.map((exercise) => exercise.toJson()).toList();
+    await prefs.setString('gym_exercises', jsonEncode(data));
+  }
 
   void _addExercise(String exercise, String description, String form) {
     setState(() {
@@ -645,6 +708,7 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
         description: description,
         form: form,
       ));
+      _saveExercises();
     });
   }
 
@@ -662,10 +726,6 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
             top: 16.0,
             right: 16.0,
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                textStyle: const TextStyle(fontSize: 12.0),
-              ),
               onPressed: () {
                 Navigator.pushNamed(context, '/');
               },
