@@ -307,6 +307,7 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
     setState(() {
       bookmarkedWorkouts =
           prefs.getStringList('bookmarkedWorkouts')?.toSet() ?? {};
+      _sortWorkouts();
     });
   }
 
@@ -319,6 +320,18 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
         bookmarkedWorkouts.add(workoutName);
       }
       prefs.setStringList('bookmarkedWorkouts', bookmarkedWorkouts.toList());
+      _sortWorkouts();
+    });
+  }
+
+  void _sortWorkouts() {
+    workoutPlans.sort((a, b) {
+      final aBookmarked = bookmarkedWorkouts.contains(a.name);
+      final bBookmarked = bookmarkedWorkouts.contains(b.name);
+
+      if (aBookmarked && !bBookmarked) return -1; // `a` comes before `b`
+      if (!aBookmarked && bBookmarked) return 1; // `b` comes before `a`
+      return 0; // No change in order
     });
   }
 
@@ -335,7 +348,7 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pre-Made Outdoor Training"),
+        title: const Text("Pre-Made no equip"),
         actions: [
           IconButton(
             icon: const Icon(Icons.home),
@@ -458,6 +471,7 @@ class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
     setState(() {
       bookmarkedWorkouts =
           prefs.getStringList('bookmarkedWorkouts')?.toSet() ?? {};
+      _sortWorkouts();
     });
   }
 
@@ -470,6 +484,18 @@ class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
         bookmarkedWorkouts.add(workoutName);
       }
       prefs.setStringList('bookmarkedWorkouts', bookmarkedWorkouts.toList());
+      _sortWorkouts();
+    });
+  }
+
+  void _sortWorkouts() {
+    workoutPlans.sort((a, b) {
+      final aBookmarked = bookmarkedWorkouts.contains(a.name);
+      final bBookmarked = bookmarkedWorkouts.contains(b.name);
+
+      if (aBookmarked && !bBookmarked) return -1; // `a` comes before `b`
+      if (!aBookmarked && bBookmarked) return 1; // `b` comes before `a`
+      return 0; // No change in order
     });
   }
 
@@ -486,7 +512,7 @@ class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pre-Made Gym Training"),
+        title: const Text("Pre-Made Gym"),
         actions: [
           IconButton(
             icon: const Icon(Icons.home),
@@ -657,7 +683,7 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pre-Made Outdoor Training"),
+        title: const Text("Full list"),
         actions: [
           IconButton(
             icon: const Icon(Icons.home),
@@ -800,7 +826,7 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pre-Made Gym Training"),
+        title: const Text("Full list"),
         actions: [
           IconButton(
             icon: const Icon(Icons.home),
