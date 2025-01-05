@@ -640,6 +640,18 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
     }
   }
 
+  // Function to handle adding a new exercise
+  void _addNewExercise(String exercise, String description, String form) {
+    setState(() {
+      exercises.add(ExerciseTile(
+        exercise: exercise,
+        description: description,
+        form: form,
+      ));
+    });
+    _saveExercises(); // Save the updated exercises list
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -659,14 +671,36 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
               );
             },
           ),
+          // Add New Exercise Button
           Positioned(
-            top: 16.0,
+            bottom: 16.0,
             right: 16.0,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/');
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AddExerciseDialog(
+                      onAdd: _addNewExercise, // Pass the add function to dialog
+                    );
+                  },
+                );
               },
-              child: const Text("⌂"),
+              child: const Text("+"),
+            ),
+          ),
+          // Home Button at Bottom Center
+          Positioned(
+            bottom: 16.0,
+            left: 0.0,
+            right: 0.0,
+            child: Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/');
+                },
+                child: const Text("⌂"),
+              ),
             ),
           ),
         ],
@@ -755,6 +789,18 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
     }
   }
 
+  // Function to handle adding a new exercise
+  void _addNewExercise(String exercise, String description, String form) {
+    setState(() {
+      exercises.add(ExerciseTile(
+        exercise: exercise,
+        description: description,
+        form: form,
+      ));
+    });
+    _saveExercises(); // Save the updated exercises list
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -774,14 +820,36 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
               );
             },
           ),
+          // Add New Exercise Button
           Positioned(
-            top: 16.0,
+            bottom: 16.0,
             right: 16.0,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/');
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AddExerciseDialog(
+                      onAdd: _addNewExercise, // Pass the add function to dialog
+                    );
+                  },
+                );
               },
-              child: const Text("⌂"),
+              child: const Text("+"),
+            ),
+          ),
+          // Home Button at Bottom Center
+          Positioned(
+            bottom: 16.0,
+            left: 0.0,
+            right: 0.0,
+            child: Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/');
+                },
+                child: const Text("⌂"),
+              ),
             ),
           ),
         ],
