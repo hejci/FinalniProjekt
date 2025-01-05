@@ -567,7 +567,8 @@ class FullListOutdoorTraining extends StatefulWidget {
   const FullListOutdoorTraining({super.key, this.initialExercise});
 
   @override
-  _FullListOutdoorTrainingState createState() => _FullListOutdoorTrainingState();
+  _FullListOutdoorTrainingState createState() =>
+      _FullListOutdoorTrainingState();
 }
 
 class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
@@ -625,7 +626,7 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
   Future<void> _saveExercises() async {
     final prefs = await SharedPreferences.getInstance();
     final List<Map<String, dynamic>> data =
-        exercises.map((exercise) => exercise.toJson()).toList();
+    exercises.map((exercise) => exercise.toJson()).toList();
     await prefs.setString('outdoor_exercises', jsonEncode(data));
   }
 
@@ -655,7 +656,15 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Full list")),
+      appBar: AppBar(
+        title: const Text("Pre-Made Outdoor Training"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home),
+            onPressed: () => Navigator.pushNamed(context, '/'),
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           ListView.builder(
@@ -687,20 +696,6 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
                 );
               },
               child: const Text("+"),
-            ),
-          ),
-          // Home Button at Bottom Center
-          Positioned(
-            bottom: 16.0,
-            left: 0.0,
-            right: 0.0,
-            child: Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/');
-                },
-                child: const Text("⌂"),
-              ),
             ),
           ),
         ],
@@ -753,7 +748,7 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
         const ExerciseTile(
           exercise: "Bench Press",
           description:
-              "A compound upper-body exercise for chest, shoulders, and triceps.",
+          "A compound upper-body exercise for chest, shoulders, and triceps.",
           form: "",
         ),
         const ExerciseTile(
@@ -774,7 +769,7 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
   Future<void> _saveExercises() async {
     final prefs = await SharedPreferences.getInstance();
     final List<Map<String, dynamic>> data =
-        exercises.map((exercise) => exercise.toJson()).toList();
+    exercises.map((exercise) => exercise.toJson()).toList();
     await prefs.setString('gym_exercises', jsonEncode(data));
   }
 
@@ -804,7 +799,15 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Full list")),
+      appBar: AppBar(
+        title: const Text("Pre-Made Gym Training"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home),
+            onPressed: () => Navigator.pushNamed(context, '/'),
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           ListView.builder(
@@ -838,25 +841,12 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
               child: const Text("+"),
             ),
           ),
-          // Home Button at Bottom Center
-          Positioned(
-            bottom: 16.0,
-            left: 0.0,
-            right: 0.0,
-            child: Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/');
-                },
-                child: const Text("⌂"),
-              ),
-            ),
-          ),
         ],
       ),
     );
   }
 }
+
 
 class ExerciseTile extends StatelessWidget {
   final String exercise;
