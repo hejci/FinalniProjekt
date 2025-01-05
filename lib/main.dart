@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_emoji/flutter_emoji.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,9 +34,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/outdoorTraining': (context) => const OutdoorTrainingScreen(),
         '/gymTraining': (context) => const GymTrainingScreen(),
-        '/PreMadeOutdoorTraining': (context) => PreMadeOutdoorTraining(),
-        '/PreMadeGymTraining': (context) => PreMadeGymTraining(),
-        '/FullListOutdoorTraining': (context) => FullListOutdoorTraining(),
+        '/PreMadeOutdoorTraining': (context) => const PreMadeOutdoorTraining(),
+        '/PreMadeGymTraining': (context) => const PreMadeGymTraining(),
+        '/FullListOutdoorTraining': (context) => const FullListOutdoorTraining(),
         '/FullListGymTraining': (context) => const FullListGymTraining(),
       },
     );
@@ -110,7 +109,7 @@ class MainPage extends State<Mainwidget> {
                           onPressed: () {
                             Navigator.pushNamed(context, '/outdoorTraining');
                           },
-                          child: const Text("Outdoors or at home without gym equipment"),
+                          child: const Text("Without gym equipment"),
                         ),
                       ),
                     ),
@@ -122,7 +121,7 @@ class MainPage extends State<Mainwidget> {
                           onPressed: () {
                             Navigator.pushNamed(context, '/gymTraining');
                           },
-                          child: const Text("In a gym or at home with gym equipment"),
+                          child: const Text("With gym equipment"),
                         ),
                       ),
                     ),
@@ -144,13 +143,13 @@ class OutdoorTrainingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Trénink venku nebo doma")),
+      appBar: AppBar(title: const Text("Without equipment")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              "Trénink venku, doma bez přístupu k posilovacím strojům",
+              "Training without equipment",
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -165,9 +164,10 @@ class OutdoorTrainingScreen extends StatelessWidget {
                       height: 100,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/PreMadeOutdoorTraining');
+                          Navigator.pushNamed(
+                              context, '/PreMadeOutdoorTraining');
                         },
-                        child: const Text("Předpřipravené tréninky"),
+                        child: const Text("Premade trainings"),
                       ),
                     ),
                   ),
@@ -177,9 +177,10 @@ class OutdoorTrainingScreen extends StatelessWidget {
                       height: 100,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/FullListOutdoorTraining');
+                          Navigator.pushNamed(
+                              context, '/FullListOutdoorTraining');
                         },
-                        child: const Text("Seznam cviků"),
+                        child: const Text("List of excercises"),
                       ),
                     ),
                   ),
@@ -193,7 +194,6 @@ class OutdoorTrainingScreen extends StatelessWidget {
   }
 }
 
-
 // Screen for gym/home training with machines
 class GymTrainingScreen extends StatelessWidget {
   const GymTrainingScreen({super.key});
@@ -201,13 +201,13 @@ class GymTrainingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Trénink v posilovně")),
+      appBar: AppBar(title: const Text("With equipment")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              "Trénink v posilovně, doma s přístupem k posilovacím strojům",
+              "Training with gym equipment",
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -224,11 +224,11 @@ class GymTrainingScreen extends StatelessWidget {
                         onPressed: () {
                           Navigator.pushNamed(context, '/PreMadeGymTraining');
                         },
-                        child: const Text("Předpřipravené tréninky"),
+                        child: const Text("Premade trainings"),
                       ),
                     ),
                   ),
-                   const SizedBox(width: 8.0),
+                  const SizedBox(width: 8.0),
                   Expanded(
                     child: SizedBox(
                       height: 100,
@@ -236,7 +236,7 @@ class GymTrainingScreen extends StatelessWidget {
                         onPressed: () {
                           Navigator.pushNamed(context, '/FullListGymTraining');
                         },
-                        child: const Text("Seznam cviků"),
+                        child: const Text("List of excercises"),
                       ),
                     ),
                   ),
@@ -252,7 +252,7 @@ class GymTrainingScreen extends StatelessWidget {
 
 class WorkoutPlan {
   final String name;
-  final Map<String, List<String>> sections; 
+  final Map<String, List<String>> sections;
 
   WorkoutPlan({
     required this.name,
@@ -260,10 +260,10 @@ class WorkoutPlan {
   });
 }
 
-
-
 // Advanced Outdoor Training Screen
 class PreMadeOutdoorTraining extends StatefulWidget {
+  const PreMadeOutdoorTraining({super.key});
+
   @override
   _PreMadeOutdoorTrainingState createState() => _PreMadeOutdoorTrainingState();
 }
@@ -305,7 +305,8 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
   Future<void> _loadBookmarks() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      bookmarkedWorkouts = prefs.getStringList('bookmarkedWorkouts')?.toSet() ?? {};
+      bookmarkedWorkouts =
+          prefs.getStringList('bookmarkedWorkouts')?.toSet() ?? {};
     });
   }
 
@@ -319,6 +320,15 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
       }
       prefs.setStringList('bookmarkedWorkouts', bookmarkedWorkouts.toList());
     });
+  }
+
+  void _navigateToFullList(BuildContext context, String exerciseName) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FullListOutdoorTraining(initialExercise: exerciseName),
+      ),
+    );
   }
 
   @override
@@ -345,60 +355,66 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
   }
 
   Widget _buildWorkoutCard(BuildContext context, WorkoutPlan workout) {
-  final isBookmarked = bookmarkedWorkouts.contains(workout.name);
-  return Card(
-    margin: const EdgeInsets.symmetric(vertical: 8.0),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-    child: ExpansionTile(
-      leading: IconButton(
-        icon: Icon(
-          isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
-          color: isBookmarked ? Colors.blue : null,
+    final isBookmarked = bookmarkedWorkouts.contains(workout.name);
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      child: ExpansionTile(
+        leading: IconButton(
+          icon: Icon(
+            isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
+            color: isBookmarked ? Colors.blue : null,
+          ),
+          onPressed: () => _toggleBookmark(workout.name),
         ),
-        onPressed: () => _toggleBookmark(workout.name),
-      ),
-      title: Text(
-        workout.name,
-        style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-      ),
-      children: [
-        Column(
-          children: workout.sections.entries.map((entry) {
-            return ListTile(
-              title: Text(entry.key,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: entry.value
-                    .map((exercise) => Text("- $exercise"))
-                    .toList(),
+        title: Text(
+          workout.name,
+          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        ),
+        children: [
+          Column(
+            children: workout.sections.entries.map((entry) {
+              return ListTile(
+                title: Text(entry.key,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: entry.value
+                      .map((exercise) => GestureDetector(
+                            onTap: () {
+                              _navigateToFullList(context, exercise.split(" - ").first); // Send exercise name
+                            },
+                            child: Text("- $exercise"),
+                          ))
+                      .toList(),
+                ),
+              );
+            }).toList(),
+          ),
+          const Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  // Start workout logic
+                },
+                icon: const Icon(Icons.play_arrow),
+                label: const Text("Start Workout"),
               ),
-            );
-          }).toList(),
-        ),
-        const Divider(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            ElevatedButton.icon(
-              onPressed: () {
-                // Start workout logic
-              },
-              icon: const Icon(Icons.play_arrow),
-              label: const Text("Start Workout"),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 
 
-
 // Advanced Gym Training Screen
 class PreMadeGymTraining extends StatefulWidget {
+  const PreMadeGymTraining({super.key});
+
   @override
   _PreMadeGymTrainingState createState() => _PreMadeGymTrainingState();
 }
@@ -440,7 +456,8 @@ class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
   Future<void> _loadBookmarks() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      bookmarkedWorkouts = prefs.getStringList('bookmarkedWorkouts')?.toSet() ?? {};
+      bookmarkedWorkouts =
+          prefs.getStringList('bookmarkedWorkouts')?.toSet() ?? {};
     });
   }
 
@@ -454,6 +471,15 @@ class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
       }
       prefs.setStringList('bookmarkedWorkouts', bookmarkedWorkouts.toList());
     });
+  }
+
+  void _navigateToFullList(BuildContext context, String exerciseName) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FullListGymTraining(initialExercise: exerciseName),
+      ),
+    );
   }
 
   @override
@@ -480,59 +506,65 @@ class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
   }
 
   Widget _buildWorkoutCard(BuildContext context, WorkoutPlan workout) {
-  final isBookmarked = bookmarkedWorkouts.contains(workout.name);
-  return Card(
-    margin: const EdgeInsets.symmetric(vertical: 8.0),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-    child: ExpansionTile(
-      leading: IconButton(
-        icon: Icon(
-          isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
-          color: isBookmarked ? Colors.blue : null,
+    final isBookmarked = bookmarkedWorkouts.contains(workout.name);
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      child: ExpansionTile(
+        leading: IconButton(
+          icon: Icon(
+            isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
+            color: isBookmarked ? Colors.blue : null,
+          ),
+          onPressed: () => _toggleBookmark(workout.name),
         ),
-        onPressed: () => _toggleBookmark(workout.name),
-      ),
-      title: Text(
-        workout.name,
-        style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-      ),
-      children: [
-        Column(
-          children: workout.sections.entries.map((entry) {
-            return ListTile(
-              title: Text(entry.key,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: entry.value
-                    .map((exercise) => Text("- $exercise"))
-                    .toList(),
+        title: Text(
+          workout.name,
+          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        ),
+        children: [
+          Column(
+            children: workout.sections.entries.map((entry) {
+              return ListTile(
+                title: Text(entry.key,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: entry.value
+                      .map((exercise) => GestureDetector(
+                            onTap: () {
+                              _navigateToFullList(context, exercise.split(" - ").first); // Send exercise name
+                            },
+                            child: Text("- $exercise"),
+                          ))
+                      .toList(),
+                ),
+              );
+            }).toList(),
+          ),
+          const Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  // Start workout logic
+                },
+                icon: const Icon(Icons.play_arrow),
+                label: const Text("Start Workout"),
               ),
-            );
-          }).toList(),
-        ),
-        const Divider(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            ElevatedButton.icon(
-              onPressed: () {
-                // Start workout logic
-              },
-              icon: const Icon(Icons.play_arrow),
-              label: const Text("Start Workout"),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
-}
-
 
 class FullListOutdoorTraining extends StatefulWidget {
-  const FullListOutdoorTraining({super.key});
+  final String? initialExercise;
+
+  const FullListOutdoorTraining({super.key, this.initialExercise});
 
   @override
   _FullListOutdoorTrainingState createState() => _FullListOutdoorTrainingState();
@@ -540,11 +572,17 @@ class FullListOutdoorTraining extends StatefulWidget {
 
 class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
   List<ExerciseTile> exercises = [];
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _loadExercises();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.initialExercise != null) {
+        _scrollToExercise(widget.initialExercise!);
+      }
+    });
   }
 
   Future<void> _loadExercises() async {
@@ -553,30 +591,30 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
     if (savedData != null) {
       final List<dynamic> decodedData = jsonDecode(savedData);
       setState(() {
-        exercises = decodedData.map((data) => ExerciseTile.fromJson(data)).toList();
+        exercises =
+            decodedData.map((data) => ExerciseTile.fromJson(data)).toList();
       });
     } else {
       _setDefaultExercises();
     }
   }
 
-  // Set default exercises
   void _setDefaultExercises() {
     setState(() {
       exercises = [
-        ExerciseTile(
+        const ExerciseTile(
           exercise: "Push-Ups",
-          description: "A basic upper-body strength exercise. Targets chest, shoulders, and triceps.",
+          description: "A bodyweight exercise to strengthen the chest and triceps.",
           form: "",
         ),
-        ExerciseTile(
-          exercise: "Planks",
-          description: "Core strengthening exercise. Engage your abs to hold the position.",
+        const ExerciseTile(
+          exercise: "Mountain Climbers",
+          description: "A cardio exercise for overall conditioning.",
           form: "",
         ),
-        ExerciseTile(
-          exercise: "Bodyweight Squats",
-          description: "A lower-body exercise focusing on quads, hamstrings, and glutes.",
+        const ExerciseTile(
+          exercise: "Burpees",
+          description: "A full-body exercise for explosive power.",
           form: "",
         ),
       ];
@@ -586,30 +624,40 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
 
   Future<void> _saveExercises() async {
     final prefs = await SharedPreferences.getInstance();
-    final List<Map<String, dynamic>> data = exercises.map((exercise) => exercise.toJson()).toList();
+    final List<Map<String, dynamic>> data =
+        exercises.map((exercise) => exercise.toJson()).toList();
     await prefs.setString('outdoor_exercises', jsonEncode(data));
   }
 
-  void _addExercise(String exercise, String description, String form) {
-    setState(() {
-      exercises.add(ExerciseTile(
-        exercise: exercise,
-        description: description,
-        form: form,
-      ));
-      _saveExercises();
-    });
+  void _scrollToExercise(String exerciseName) {
+    final index = exercises.indexWhere((exercise) => exercise.exercise == exerciseName);
+    if (index != -1) {
+      _scrollController.animateTo(
+        index * 80.0, // Approximate height of each exercise tile
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Seznam cviků - Venku")),
+      appBar: AppBar(title: const Text("Full list")),
       body: Stack(
         children: [
-          ListView(
-            padding: const EdgeInsets.all(8.0),
-            children: exercises,
+          ListView.builder(
+            controller: _scrollController,
+            itemCount: exercises.length,
+            itemBuilder: (context, index) {
+              final exercise = exercises[index];
+              return Card(
+                color: widget.initialExercise == exercise.exercise
+                    ? Colors.yellow.shade100
+                    : null, // Highlight the matched exercise
+                child: exercise,
+              );
+            },
           ),
           Positioned(
             top: 16.0,
@@ -621,21 +669,6 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
               child: const Text("⌂"),
             ),
           ),
-          Positioned(
-            bottom: 16.0,
-            right: 16.0,
-            child: ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AddExerciseDialog(onAdd: _addExercise);
-                  },
-                );
-              },
-              child: const Text("+"),
-            ),
-          ),
         ],
       ),
     );
@@ -643,7 +676,9 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
 }
 
 class FullListGymTraining extends StatefulWidget {
-  const FullListGymTraining({super.key});
+  final String? initialExercise;
+
+  const FullListGymTraining({super.key, this.initialExercise});
 
   @override
   _FullListGymTrainingState createState() => _FullListGymTrainingState();
@@ -651,11 +686,17 @@ class FullListGymTraining extends StatefulWidget {
 
 class _FullListGymTrainingState extends State<FullListGymTraining> {
   List<ExerciseTile> exercises = [];
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _loadExercises();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.initialExercise != null) {
+        _scrollToExercise(widget.initialExercise!);
+      }
+    });
   }
 
   Future<void> _loadExercises() async {
@@ -664,28 +705,29 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
     if (savedData != null) {
       final List<dynamic> decodedData = jsonDecode(savedData);
       setState(() {
-        exercises = decodedData.map((data) => ExerciseTile.fromJson(data)).toList();
+        exercises =
+            decodedData.map((data) => ExerciseTile.fromJson(data)).toList();
       });
     } else {
       _setDefaultExercises();
     }
   }
 
-  // Set default exercises for gym training
   void _setDefaultExercises() {
     setState(() {
       exercises = [
-        ExerciseTile(
+        const ExerciseTile(
           exercise: "Bench Press",
-          description: "A compound upper-body exercise for chest, shoulders, and triceps.",
+          description:
+              "A compound upper-body exercise for chest, shoulders, and triceps.",
           form: "",
         ),
-        ExerciseTile(
+        const ExerciseTile(
           exercise: "Deadlifts",
           description: "A full-body exercise that targets the posterior chain.",
           form: "",
         ),
-        ExerciseTile(
+        const ExerciseTile(
           exercise: "Lat Pulldown",
           description: "An exercise for building back strength and width.",
           form: "",
@@ -697,30 +739,40 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
 
   Future<void> _saveExercises() async {
     final prefs = await SharedPreferences.getInstance();
-    final List<Map<String, dynamic>> data = exercises.map((exercise) => exercise.toJson()).toList();
+    final List<Map<String, dynamic>> data =
+        exercises.map((exercise) => exercise.toJson()).toList();
     await prefs.setString('gym_exercises', jsonEncode(data));
   }
 
-  void _addExercise(String exercise, String description, String form) {
-    setState(() {
-      exercises.add(ExerciseTile(
-        exercise: exercise,
-        description: description,
-        form: form,
-      ));
-      _saveExercises();
-    });
+  void _scrollToExercise(String exerciseName) {
+    final index = exercises.indexWhere((exercise) => exercise.exercise == exerciseName);
+    if (index != -1) {
+      _scrollController.animateTo(
+        index * 80.0, // Approximate height of each exercise tile
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Seznam cviků - Posilovna")),
+      appBar: AppBar(title: const Text("Full list")),
       body: Stack(
         children: [
-          ListView(
-            padding: const EdgeInsets.all(8.0),
-            children: exercises,
+          ListView.builder(
+            controller: _scrollController,
+            itemCount: exercises.length,
+            itemBuilder: (context, index) {
+              final exercise = exercises[index];
+              return Card(
+                color: widget.initialExercise == exercise.exercise
+                    ? Colors.yellow.shade100
+                    : null, // Highlight the matched exercise
+                child: exercise,
+              );
+            },
           ),
           Positioned(
             top: 16.0,
@@ -732,27 +784,11 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
               child: const Text("⌂"),
             ),
           ),
-          Positioned(
-            bottom: 16.0,
-            right: 16.0,
-            child: ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AddExerciseDialog(onAdd: _addExercise);
-                  },
-                );
-              },
-              child: const Text("+"),
-            ),
-          ),
         ],
       ),
     );
   }
 }
-
 
 class ExerciseTile extends StatelessWidget {
   final String exercise;
@@ -808,7 +844,6 @@ class ExerciseTile extends StatelessWidget {
     );
   }
 }
-
 
 class AddExerciseDialog extends StatefulWidget {
   final Function(String, String, String) onAdd;
