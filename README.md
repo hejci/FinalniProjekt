@@ -1,3 +1,3 @@
-# hotovson
+# SportLift
 
 A new Flutter project.
