@@ -3,9 +3,13 @@ import 'package:flutter_emoji/flutter_emoji.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
+import 'package:url_launcher/url_launcher.dart';
+import 'providers/theme_provider.dart';
 
 var parser = EmojiParser();
 var home = Emoji('home', '🏠︎');
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,22 +29,87 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    return MaterialApp(
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: themeProvider.themeMode,
-      home: const Mainwidget(),
-      routes: {
-        '/outdoorTraining': (context) => const OutdoorTrainingScreen(),
-        '/gymTraining': (context) => const GymTrainingScreen(),
-        '/PreMadeOutdoorTraining': (context) => const PreMadeOutdoorTraining(),
-        '/PreMadeGymTraining': (context) => const PreMadeGymTraining(),
-        '/FullListOutdoorTraining': (context) => const FullListOutdoorTraining(),
-        '/FullListGymTraining': (context) => const FullListGymTraining(),
-      },
+    return ChangeNotifierProvider(
+      create: (context) => ThemeProvider()..loadTheme(), // Load the theme from SharedPreferences
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp(
+            theme: _lightTheme,  // Light theme
+            darkTheme: _darkTheme,  // Dark theme
+            themeMode: themeProvider.themeMode, // Set the theme mode (light or dark)
+            home: const Mainwidget(),
+            routes: {
+              '/outdoorTraining': (context) => const OutdoorTrainingScreen(),
+              '/gymTraining': (context) => const GymTrainingScreen(),
+              '/PreMadeOutdoorTraining': (context) => const PreMadeOutdoorTraining(),
+              '/PreMadeGymTraining': (context) => const PreMadeGymTraining(),
+              '/FullListOutdoorTraining': (context) => const FullListOutdoorTraining(),
+              '/FullListGymTraining': (context) => const FullListGymTraining(),
+            },
+          );
+        },
+      ),
     );
   }
+
+  // Define your light theme
+  ThemeData get _lightTheme {
+  return ThemeData(
+    primaryColor: Colors.blue,
+    scaffoldBackgroundColor: Colors.white,
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.blue,
+      iconTheme: IconThemeData(color: Colors.white),
+    ),
+    textTheme: TextTheme(
+      displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black),
+      bodyLarge: TextStyle(fontSize: 16, color: Colors.black),
+    ),
+    buttonTheme: ButtonThemeData(
+      buttonColor: Colors.blue,
+      textTheme: ButtonTextTheme.primary,
+    ),
+    iconTheme: IconThemeData(color: Colors.blue),
+    primaryColorDark: Colors.blue.shade700,
+    colorScheme: ColorScheme.light(
+      primary: Colors.blue, // Primary color for elements like buttons
+      onPrimary: Colors.white, // Text and icons on top of primary color
+      background: Colors.white, // Background color
+      onBackground: Colors.black, // Text color for background
+      surface: Colors.white, // Color of surfaces (cards, dialogs, etc.)
+      onSurface: Colors.black, // Text color on surfaces
+    ),
+  );
+}
+
+ThemeData get _darkTheme {
+  return ThemeData(
+    primaryColor: Colors.blueGrey,
+    scaffoldBackgroundColor: Colors.black,
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.blueGrey,
+      iconTheme: IconThemeData(color: Colors.white),
+    ),
+    textTheme: TextTheme(
+      displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
+      bodyLarge: TextStyle(fontSize: 16, color: Colors.white),
+    ),
+    buttonTheme: ButtonThemeData(
+      buttonColor: Colors.blueGrey,
+      textTheme: ButtonTextTheme.primary,
+    ),
+    iconTheme: IconThemeData(color: Colors.white),
+    primaryColorDark: Colors.blueGrey.shade700,
+    colorScheme: ColorScheme.dark(
+      primary: Colors.blueGrey, // Primary color for elements like buttons
+      onPrimary: Colors.white, // Text and icons on top of primary color
+      background: Colors.black, // Background color
+      onBackground: Colors.white, // Text color for background
+      surface: Colors.grey.shade900, // Color of surfaces (cards, dialogs, etc.)
+      onSurface: Colors.white, // Text color on surfaces
+    ),
+  );
+}
 }
 
 class ThemeProvider extends ChangeNotifier {
@@ -164,8 +233,7 @@ class OutdoorTrainingScreen extends StatelessWidget {
                       height: 100,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, '/PreMadeOutdoorTraining');
+                          Navigator.pushNamed(context, '/PreMadeOutdoorTraining');
                         },
                         child: const Text("Premade trainings"),
                       ),
@@ -177,10 +245,9 @@ class OutdoorTrainingScreen extends StatelessWidget {
                       height: 100,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, '/FullListOutdoorTraining');
+                          Navigator.pushNamed(context, '/FullListOutdoorTraining');
                         },
-                        child: const Text("List of excercises"),
+                        child: const Text("List of exercises"),
                       ),
                     ),
                   ),
@@ -236,7 +303,7 @@ class GymTrainingScreen extends StatelessWidget {
                         onPressed: () {
                           Navigator.pushNamed(context, '/FullListGymTraining');
                         },
-                        child: const Text("List of excercises"),
+                        child: const Text("List of exercises"),
                       ),
                     ),
                   ),
@@ -631,18 +698,23 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
       exercises = [
         const ExerciseTile(
           exercise: "Push-Ups",
-          description: "A bodyweight exercise to strengthen the chest and triceps.",
-          form: "",
+          description: "Biceps, triceps, upper back, chest, shoulders, core",
+          form: "https://www.youtube.com/watch?v=WDIpL0pjun0",
         ),
         const ExerciseTile(
-          exercise: "Mountain Climbers",
-          description: "A cardio exercise for overall conditioning.",
-          form: "",
+          exercise: "Lunges",
+          description: "Gluteals, quadriceps, and hamstrings",
+          form: "https://www.youtube.com/watch?v=MxfTNXSFiYI",
         ),
         const ExerciseTile(
-          exercise: "Burpees",
-          description: "A full-body exercise for explosive power.",
-          form: "",
+          exercise: "Squat jump",
+          description: "Pretty much every lower body muscle and your explosivnes",
+          form: "https://www.youtube.com/watch?v=YGGq0AE5Uyc",
+        ),
+        const ExerciseTile(
+          exercise: "Scorpion",
+          description: "Lower back, hip flexors, glutes and core",
+          form: "https://www.youtube.com/watch?v=zFlwrxVeQxc",
         ),
       ];
     });
@@ -774,18 +846,28 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
         const ExerciseTile(
           exercise: "Bench Press",
           description:
-          "A compound upper-body exercise for chest, shoulders, and triceps.",
-          form: "",
+          "Arms, shoulders, pec majors, your anterior deltoid, triceps, core",
+          form: "https://www.youtube.com/watch?v=hWbUlkb5Ms4",
         ),
         const ExerciseTile(
           exercise: "Deadlifts",
-          description: "A full-body exercise that targets the posterior chain.",
-          form: "",
+          description: "Glutes, hamstrings, core, back, and trapezius muscles",
+          form: "https://www.youtube.com/watch?v=op9kVnSso6Q",
         ),
         const ExerciseTile(
-          exercise: "Lat Pulldown",
-          description: "An exercise for building back strength and width.",
-          form: "",
+          exercise: "Back Squat",
+          description: "Pretty much every lower body muscle",
+          form: "https://www.youtube.com/watch?v=QmZAiBqPvZw",
+        ),
+        const ExerciseTile(
+          exercise: "Bulgarian squat",
+          description: "Quadriceps and glutes",
+          form: "https://www.youtube.com/watch?v=9p5e2BSvoLs",
+        ),
+        const ExerciseTile(
+          exercise: "Calves",
+          description: "Calves",
+          form: "https://www.youtube.com/watch?v=Zep-wKHWkNM&t=1s",
         ),
       ];
     });
@@ -902,6 +984,20 @@ class ExerciseTile extends StatelessWidget {
     };
   }
 
+  bool _isVideoLink(String url) {
+    return Uri.tryParse(url)?.hasAbsolutePath ?? false;
+  }
+
+  void _openVideoLink(BuildContext context, String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open the video link')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -919,7 +1015,18 @@ class ExerciseTile extends StatelessWidget {
               children: [
                 Text("Description: $description"),
                 const SizedBox(height: 4.0),
-                Text("Form: $form"),
+                _isVideoLink(form)
+                    ? GestureDetector(
+                        onTap: () => _openVideoLink(context, form),
+                        child: Text(
+                          "Watch Form Video",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      )
+                    : Text("Form: $form"),
               ],
             ),
           ),
