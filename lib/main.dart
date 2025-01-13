@@ -319,24 +319,48 @@ class PreMadeOutdoorTraining extends StatefulWidget {
 class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
   final List<WorkoutPlan> workoutPlans = [
     WorkoutPlan(
-      name: "Random 1",
+      name: "Lower body",
       sections: {
         "Workout": [
           "Warm-up - 10 minutes",
-          "Push-Ups - 3 sets of 12 reps",
-          "Bodyweight Squats - 3 sets of 15 reps",
-          "Plank - 3 sets of 30 seconds",
+          "Bulgarian squats: 3 sets of 10 reps per leg",
+          "Squat jumps: 3 sets of 12 reps (focus on height)",
+          "Lunges: 3 sets of 12 reps per leg",
+          "Nordic curls: 3 sets of 6 reps",
+          "Broad jumps: 3 sets of 8 reps (focus on explosive power)",
+          "Plank x 3 sets of 30 seconds",
+          "Pigeon pose stretch x 1 minute per side",
+          "Seated forward fold x 1 minute",
         ],
       },
     ),
     WorkoutPlan(
-      name: "Random 2",
+      name: "Upper body",
       sections: {
         "Workout": [
-          "Warm-up - 10 minutes",
-          "Mountain Climbers - 4 sets of 30 seconds",
-          "Burpees - 3 sets of 10 reps",
-          "Jump Squats - 3 sets of 12 reps",
+          "Push-Ups: 4 sets of 15 reps",
+          "Pull-Ups: 3 sets of 8-10 reps",
+          "Diamond Push-Ups: 3 sets of 10 reps",
+          "Wide Push-Ups: 3 sets of 12 reps",
+          "Plank to Push-Up (from forearms to hands): 3 sets of 10 reps",
+          "Plank with shoulder taps x 3 sets of 30 seconds",
+          "Chest opener stretch x 1 minute per side",
+          "Cat-cow stretch x 10 reps",
+        ],
+      },
+    ),
+    WorkoutPlan(
+      name: "Full-body",
+      sections: {
+        "Workout": [
+          "Push-Ups: 4 sets of 12 reps",
+          "Broad jumps: 3 sets of 8 reps (focus on distance)",
+          "Bulgarian squats: 3 sets of 10 reps per leg",
+          "Squat jumps: 3 sets of 10 reps",
+          "Lunges: 3 sets of 12 reps per leg",
+          "Plank x 3 sets of 30 seconds",
+          "Pigeon pose stretch x 1 minute per side",
+          "Forward fold (standing or seated) x 1 minute",
         ],
       },
     ),
@@ -495,24 +519,49 @@ class PreMadeGymTraining extends StatefulWidget {
 class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
   final List<WorkoutPlan> workoutPlans = [
     WorkoutPlan(
-      name: "Neco 1",
+      name: "Upper body",
       sections: {
         "Workout": [
           "Warm-up - 10 minutes",
-          "Bench Press - 3 sets of 10 reps",
-          "Leg Press - 3 sets of 12 reps",
-          "Seated Rows - 3 sets of 15 reps",
+          "Dumbbell Bench Press: 4 sets of 8 reps",
+          "Pull-Ups: 3 sets of 8 reps",
+          "Medicine ball slams: 3 sets of 12 reps (focus on speed and power)",
+          "Single-arm dumbbell rows: 3 sets of 10 reps per side",
+          "Cable hip rotations: 3 sets of 12 per side",
+          "Plank x 3 sets of 30 seconds",
+          "Chest opener stretch against a wall x 1 minute per side",
+          "Cat-cow stretch x 10 reps",
         ],
       },
     ),
     WorkoutPlan(
-      name: "Neco 2",
+      name: "Lower body",
       sections: {
         "Workout": [
           "Warm-up - 10 minutes",
-          "Deadlifts - 3 sets of 8 reps",
-          "Squats - 3 sets of 10 reps",
-          "Overhead Press - 3 sets of 12 reps",
+          "Deadlifts: 4 sets of 5 reps (focus on explosive lift from the ground)",
+          "Bulgarian squats: 3 sets of 8 reps per leg",
+          "Broad jumps: 3 sets of 6 reps (maximize distance)",
+          "Nordic curls: 3 sets of 6 reps",
+          "Sled pushes: 3 sets of 20 meters",
+          "Plank with shoulder taps x 3 sets of 30 seconds",
+          "Pigeon pose stretch x 1 minute per side",
+          "Seated forward fold x 1 minute",
+        ],
+      },
+    ),
+    WorkoutPlan(
+      name: "Full-body",
+      sections: {
+        "Workout": [
+          "Warm-up - 10 minutes",
+          "Back squats: 4 sets of 6 reps",
+          "Dumbbell box step-ups: 3 sets of 8 per leg",
+          "Squat jumps: 3 sets of 10 reps (land softly)",
+          "Push-Ups: 3 sets of 12 reps",
+          "Calf raises: 3 sets of 15 reps",
+          "Plank: 3 sets of 30 seconds",
+          "Couch stretch x 1 minute per leg",
         ],
       },
     ),
@@ -709,18 +758,33 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
         ),
         const ExerciseTile(
           exercise: "Lunges",
-          description: "Gluteals, quadriceps, and hamstrings",
+          description: "Gluteals, quadriceps, and hamstrings (can be done with dumbbells)",
           form: "https://www.youtube.com/watch?v=MxfTNXSFiYI",
         ),
         const ExerciseTile(
-          exercise: "Squat jump",
-          description: "Pretty much every lower body muscle and your explosiveness",
+          exercise: "Squat jumps",
+          description: "Pretty much every lower body muscle and your explosiveness (can be done with a barbell)",
           form: "https://www.youtube.com/watch?v=YGGq0AE5Uyc",
         ),
         const ExerciseTile(
-          exercise: "Scorpion",
-          description: "Lower back, hip flexors, glutes, and core",
-          form: "https://www.youtube.com/watch?v=zFlwrxVeQxc",
+          exercise: "Nordic curls",
+          description: "Hamstrings, knee flexion, hip extension",
+          form: "https://www.youtube.com/watch?v=3-4pKUhkzoQ",
+        ),
+        const ExerciseTile(
+          exercise: "Broad jumps",
+          description: "Lower body power, coordination, agility, core",
+          form: "https://www.youtube.com/watch?v=96zJo3nlmHI",
+        ),
+        const ExerciseTile(
+          exercise: "Pull-Ups",
+          description: "The largest back muscles, biceps, delts",
+          form: "https://www.youtube.com/watch?v=eGo4IYlbE5g",
+        ),
+        const ExerciseTile(
+          exercise: "Plank",
+          description: "Core muscles, abdominals, lower back",
+          form: "https://www.youtube.com/watch?v=B296mZDhrP4",
         ),
       ];
     });
@@ -862,9 +926,9 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
     setState(() {
       exercises = [
         const ExerciseTile(
-          exercise: "Bench Press",
+          exercise: "Bench press",
           description:
-              "Arms, shoulders, pec majors, your anterior deltoid, triceps, core",
+              "Arms, shoulders, pec majors, anterior deltoid, triceps, core",
           form: "https://www.youtube.com/watch?v=hWbUlkb5Ms4",
         ),
         const ExerciseTile(
@@ -873,19 +937,49 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
           form: "https://www.youtube.com/watch?v=op9kVnSso6Q",
         ),
         const ExerciseTile(
-          exercise: "Back Squat",
+          exercise: "Back squats",
           description: "Pretty much every lower body muscle",
           form: "https://www.youtube.com/watch?v=QmZAiBqPvZw",
         ),
         const ExerciseTile(
-          exercise: "Bulgarian squat",
-          description: "Quadriceps and glutes",
+          exercise: "Bulgarian squats",
+          description: "Quadriceps and glutes (can be done without any added weights)",
           form: "https://www.youtube.com/watch?v=9p5e2BSvoLs",
         ),
         const ExerciseTile(
-          exercise: "Calves",
+          exercise: "Calf raises",
           description: "Calves",
           form: "https://www.youtube.com/watch?v=Zep-wKHWkNM&t=1s",
+        ),
+        const ExerciseTile(
+          exercise: "Medicine ball slams",
+          description: "Legs, glutes, abs, shoulders, arms, several back muscles",
+          form: "https://www.youtube.com/watch?v=QxYhFwMd1Ks",
+        ),
+        const ExerciseTile(
+          exercise: "Single-arm dumbbell rows",
+          description: "Lats, trapezius, rhomboids, delts, core, biceps",
+          form: "https://www.youtube.com/watch?v=A5YxsxCuZ7Y",
+        ),
+        const ExerciseTile(
+          exercise: "Dumbbell bench press",
+          description: "Arms, shoulders, pec majors, anterior deltoid, triceps, core (same as regular bench)",
+          form: "https://www.youtube.com/watch?v=VmB1G1K7v94",
+        ),
+        const ExerciseTile(
+          exercise: "Cable hip rotations",
+          description: "Glutes",
+          form: "https://www.youtube.com/watch?v=EhXxfGMggB8",
+        ),
+        const ExerciseTile(
+          exercise: "Dumbbell box step-ups",
+          description: "Whole legs",
+          form: "https://www.youtube.com/watch?v=DxUNi119Qzs",
+        ),
+        const ExerciseTile(
+          exercise: "Sled pushes",
+          description: "Whole legs, hip flexors, core, tricep, chest, shoulders ",
+          form: "https://www.youtube.com/watch?v=9XRRXaUpnLk",
         ),
       ];
     });
