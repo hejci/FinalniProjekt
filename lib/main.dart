@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
-import 'providers/theme_provider.dart';
+
 
 var parser = EmojiParser();
 var home = Emoji('home', '🏠︎');
@@ -29,87 +29,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ThemeProvider()..loadTheme(), // Load the theme from SharedPreferences
-      child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return MaterialApp(
-            theme: _lightTheme,  // Light theme
-            darkTheme: _darkTheme,  // Dark theme
-            themeMode: themeProvider.themeMode, // Set the theme mode (light or dark)
-            home: const Mainwidget(),
-            routes: {
-              '/outdoorTraining': (context) => const OutdoorTrainingScreen(),
-              '/gymTraining': (context) => const GymTrainingScreen(),
-              '/PreMadeOutdoorTraining': (context) => const PreMadeOutdoorTraining(),
-              '/PreMadeGymTraining': (context) => const PreMadeGymTraining(),
-              '/FullListOutdoorTraining': (context) => const FullListOutdoorTraining(),
-              '/FullListGymTraining': (context) => const FullListGymTraining(),
-            },
-          );
-        },
-      ),
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    return MaterialApp(
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: themeProvider.themeMode,
+      home: const Mainwidget(),
+      routes: {
+        '/outdoorTraining': (context) => const OutdoorTrainingScreen(),
+        '/gymTraining': (context) => const GymTrainingScreen(),
+        '/PreMadeOutdoorTraining': (context) => const PreMadeOutdoorTraining(),
+        '/PreMadeGymTraining': (context) => const PreMadeGymTraining(),
+        '/FullListOutdoorTraining': (context) => const FullListOutdoorTraining(),
+        '/FullListGymTraining': (context) => const FullListGymTraining(),
+      },
     );
   }
-
-  // Define your light theme
-  ThemeData get _lightTheme {
-  return ThemeData(
-    primaryColor: Colors.blue,
-    scaffoldBackgroundColor: Colors.white,
-    appBarTheme: AppBarTheme(
-      backgroundColor: Colors.blue,
-      iconTheme: IconThemeData(color: Colors.white),
-    ),
-    textTheme: TextTheme(
-      displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black),
-      bodyLarge: TextStyle(fontSize: 16, color: Colors.black),
-    ),
-    buttonTheme: ButtonThemeData(
-      buttonColor: Colors.blue,
-      textTheme: ButtonTextTheme.primary,
-    ),
-    iconTheme: IconThemeData(color: Colors.blue),
-    primaryColorDark: Colors.blue.shade700,
-    colorScheme: ColorScheme.light(
-      primary: Colors.blue, // Primary color for elements like buttons
-      onPrimary: Colors.white, // Text and icons on top of primary color
-      background: Colors.white, // Background color
-      onBackground: Colors.black, // Text color for background
-      surface: Colors.white, // Color of surfaces (cards, dialogs, etc.)
-      onSurface: Colors.black, // Text color on surfaces
-    ),
-  );
-}
-
-ThemeData get _darkTheme {
-  return ThemeData(
-    primaryColor: Colors.blueGrey,
-    scaffoldBackgroundColor: Colors.black,
-    appBarTheme: AppBarTheme(
-      backgroundColor: Colors.blueGrey,
-      iconTheme: IconThemeData(color: Colors.white),
-    ),
-    textTheme: TextTheme(
-      displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
-      bodyLarge: TextStyle(fontSize: 16, color: Colors.white),
-    ),
-    buttonTheme: ButtonThemeData(
-      buttonColor: Colors.blueGrey,
-      textTheme: ButtonTextTheme.primary,
-    ),
-    iconTheme: IconThemeData(color: Colors.white),
-    primaryColorDark: Colors.blueGrey.shade700,
-    colorScheme: ColorScheme.dark(
-      primary: Colors.blueGrey, // Primary color for elements like buttons
-      onPrimary: Colors.white, // Text and icons on top of primary color
-      background: Colors.black, // Background color
-      onBackground: Colors.white, // Text color for background
-      surface: Colors.grey.shade900, // Color of surfaces (cards, dialogs, etc.)
-      onSurface: Colors.white, // Text color on surfaces
-    ),
-  );
-}
 }
 
 class ThemeProvider extends ChangeNotifier {
@@ -156,56 +91,71 @@ class MainPage extends State<Mainwidget> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "Where will you train:",
-                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+      body: Stack(
+        children: [
+          // Background image layer
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.1,
+              child: Image.asset(
+                'assets/images/logo.jpeg',
+                fit: BoxFit.cover,
               ),
-              const SizedBox(height: 16.0),
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 100,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/outdoorTraining');
-                          },
-                          child: const Text("Without gym equipment"),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8.0),
-                    Expanded(
-                      child: SizedBox(
-                        height: 100,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/gymTraining');
-                          },
-                          child: const Text("With gym equipment"),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          // Main UI layer
+          SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 24.0),
+                  const Text(
+                    "Where will you train:",
+                    style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 100,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/outdoorTraining');
+                              },
+                              child: const Text("Without gym equipment"),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8.0),
+                        Expanded(
+                          child: SizedBox(
+                            height: 100,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/gymTraining');
+                              },
+                              child: const Text("With gym equipment"),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-// Screen for outdoor/home training without machines
 class OutdoorTrainingScreen extends StatelessWidget {
   const OutdoorTrainingScreen({super.key});
 
@@ -213,55 +163,70 @@ class OutdoorTrainingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Without equipment")),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Training without equipment",
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16.0),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 100,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/PreMadeOutdoorTraining');
-                        },
-                        child: const Text("Premade trainings"),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8.0),
-                  Expanded(
-                    child: SizedBox(
-                      height: 100,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/FullListOutdoorTraining');
-                        },
-                        child: const Text("List of exercises"),
-                      ),
-                    ),
-                  ),
-                ],
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.1,
+              child: Image.asset(
+                'assets/images/logo.jpeg',
+                fit: BoxFit.cover,
               ),
             ),
-          ],
-        ),
+          ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 16.0),
+                const Text(
+                  "Training without equipment",
+                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16.0),
+                Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 100,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, '/PreMadeOutdoorTraining');
+                            },
+                            child: const Text("Premade trainings"),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8.0),
+                      Expanded(
+                        child: SizedBox(
+                          height: 100,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, '/FullListOutdoorTraining');
+                            },
+                            child: const Text("List of exercises"),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-// Screen for gym/home training with machines
 class GymTrainingScreen extends StatelessWidget {
   const GymTrainingScreen({super.key});
 
@@ -269,49 +234,65 @@ class GymTrainingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("With equipment")),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Training with gym equipment",
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16.0),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 100,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/PreMadeGymTraining');
-                        },
-                        child: const Text("Premade trainings"),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8.0),
-                  Expanded(
-                    child: SizedBox(
-                      height: 100,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/FullListGymTraining');
-                        },
-                        child: const Text("List of exercises"),
-                      ),
-                    ),
-                  ),
-                ],
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.1,
+              child: Image.asset(
+                'assets/images/logo.jpeg',
+                fit: BoxFit.cover,
               ),
             ),
-          ],
-        ),
+          ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 16.0),
+                const Text(
+                  "Training with gym equipment",
+                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16.0),
+                Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 100,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, '/PreMadeGymTraining');
+                            },
+                            child: const Text("Premade trainings"),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8.0),
+                      Expanded(
+                        child: SizedBox(
+                          height: 100,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, '/FullListGymTraining');
+                            },
+                            child: const Text("List of exercises"),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -372,8 +353,7 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
   Future<void> _loadBookmarks() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      bookmarkedWorkouts =
-          prefs.getStringList('bookmarkedWorkouts')?.toSet() ?? {};
+      bookmarkedWorkouts = prefs.getStringList('bookmarkedWorkouts')?.toSet() ?? {};
       _sortWorkouts();
     });
   }
@@ -395,10 +375,9 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
     workoutPlans.sort((a, b) {
       final aBookmarked = bookmarkedWorkouts.contains(a.name);
       final bBookmarked = bookmarkedWorkouts.contains(b.name);
-
-      if (aBookmarked && !bBookmarked) return -1; // `a` comes before `b`
-      if (!aBookmarked && bBookmarked) return 1; // `b` comes before `a`
-      return 0; // No change in order
+      if (aBookmarked && !bBookmarked) return -1;
+      if (!aBookmarked && bBookmarked) return 1;
+      return 0;
     });
   }
 
@@ -415,7 +394,7 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pre-Made no equip"),
+        title: const Text("Pre-Made No Equip"),
         actions: [
           IconButton(
             icon: const Icon(Icons.home),
@@ -423,13 +402,29 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemCount: workoutPlans.length,
-        itemBuilder: (context, index) {
-          final workout = workoutPlans[index];
-          return _buildWorkoutCard(context, workout);
-        },
+     body: Stack(
+        children: [
+          // Background Logo Image
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.1, // Adjust opacity for better visibility
+              child: Image.asset(
+                'assets/images/logo.jpeg',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16.0),
+              itemCount: workoutPlans.length,
+              itemBuilder: (context, index) {
+                final workout = workoutPlans[index];
+                return _buildWorkoutCard(context, workout);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -455,14 +450,13 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
           Column(
             children: workout.sections.entries.map((entry) {
               return ListTile(
-                title: Text(entry.key,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                title: Text(entry.key, style: const TextStyle(fontWeight: FontWeight.bold)),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: entry.value
                       .map((exercise) => GestureDetector(
                             onTap: () {
-                              _navigateToFullList(context, exercise.split(" - ").first); // Send exercise name
+                              _navigateToFullList(context, exercise.split(" - ").first);
                             },
                             child: Text("- $exercise"),
                           ))
@@ -489,7 +483,6 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
     );
   }
 }
-
 
 // Advanced Gym Training Screen
 class PreMadeGymTraining extends StatefulWidget {
@@ -536,8 +529,7 @@ class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
   Future<void> _loadBookmarks() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      bookmarkedWorkouts =
-          prefs.getStringList('bookmarkedWorkouts')?.toSet() ?? {};
+      bookmarkedWorkouts = prefs.getStringList('bookmarkedWorkouts')?.toSet() ?? {};
       _sortWorkouts();
     });
   }
@@ -559,10 +551,9 @@ class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
     workoutPlans.sort((a, b) {
       final aBookmarked = bookmarkedWorkouts.contains(a.name);
       final bBookmarked = bookmarkedWorkouts.contains(b.name);
-
-      if (aBookmarked && !bBookmarked) return -1; // `a` comes before `b`
-      if (!aBookmarked && bBookmarked) return 1; // `b` comes before `a`
-      return 0; // No change in order
+      if (aBookmarked && !bBookmarked) return -1;
+      if (!aBookmarked && bBookmarked) return 1;
+      return 0;
     });
   }
 
@@ -587,13 +578,29 @@ class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemCount: workoutPlans.length,
-        itemBuilder: (context, index) {
-          final workout = workoutPlans[index];
-          return _buildWorkoutCard(context, workout);
-        },
+     body: Stack(
+        children: [
+          // Background Logo Image
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.1, // Adjust opacity for better visibility
+              child: Image.asset(
+                'assets/images/logo.jpeg',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16.0),
+              itemCount: workoutPlans.length,
+              itemBuilder: (context, index) {
+                final workout = workoutPlans[index];
+                return _buildWorkoutCard(context, workout);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -619,14 +626,13 @@ class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
           Column(
             children: workout.sections.entries.map((entry) {
               return ListTile(
-                title: Text(entry.key,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                title: Text(entry.key, style: const TextStyle(fontWeight: FontWeight.bold)),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: entry.value
                       .map((exercise) => GestureDetector(
                             onTap: () {
-                              _navigateToFullList(context, exercise.split(" - ").first); // Send exercise name
+                              _navigateToFullList(context, exercise.split(" - ").first);
                             },
                             child: Text("- $exercise"),
                           ))
@@ -708,12 +714,12 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
         ),
         const ExerciseTile(
           exercise: "Squat jump",
-          description: "Pretty much every lower body muscle and your explosivnes",
+          description: "Pretty much every lower body muscle and your explosiveness",
           form: "https://www.youtube.com/watch?v=YGGq0AE5Uyc",
         ),
         const ExerciseTile(
           exercise: "Scorpion",
-          description: "Lower back, hip flexors, glutes and core",
+          description: "Lower back, hip flexors, glutes, and core",
           form: "https://www.youtube.com/watch?v=zFlwrxVeQxc",
         ),
       ];
@@ -724,7 +730,7 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
   Future<void> _saveExercises() async {
     final prefs = await SharedPreferences.getInstance();
     final List<Map<String, dynamic>> data =
-    exercises.map((exercise) => exercise.toJson()).toList();
+        exercises.map((exercise) => exercise.toJson()).toList();
     await prefs.setString('outdoor_exercises', jsonEncode(data));
   }
 
@@ -732,14 +738,13 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
     final index = exercises.indexWhere((exercise) => exercise.exercise == exerciseName);
     if (index != -1) {
       _scrollController.animateTo(
-        index * 80.0, // Approximate height of each exercise tile
+        index * 80.0,
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
     }
   }
 
-  // Function to handle adding a new exercise
   void _addNewExercise(String exercise, String description, String form) {
     setState(() {
       exercises.add(ExerciseTile(
@@ -748,14 +753,14 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
         form: form,
       ));
     });
-    _saveExercises(); // Save the updated exercises list
+    _saveExercises();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Full list"),
+        title: const Text("Full Outdoor Training List"),
         actions: [
           IconButton(
             icon: const Icon(Icons.home),
@@ -765,35 +770,48 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
       ),
       body: Stack(
         children: [
-          ListView.builder(
-            controller: _scrollController,
-            itemCount: exercises.length,
-            itemBuilder: (context, index) {
-              final exercise = exercises[index];
-              return Card(
-                color: widget.initialExercise == exercise.exercise
-                    ? Colors.yellow.shade100
-                    : null, // Highlight the matched exercise
-                child: exercise,
-              );
-            },
+          // Background Logo Image
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.1, // Adjust opacity for better visibility
+              child: Image.asset(
+                'assets/images/logo.jpeg',
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          // Add New Exercise Button
-          Positioned(
-            bottom: 16.0,
-            right: 16.0,
-            child: ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AddExerciseDialog(
-                      onAdd: _addNewExercise, // Pass the add function to dialog
+          Expanded(
+            child: Stack(
+              children: [
+                ListView.builder(
+                  controller: _scrollController,
+                  itemCount: exercises.length,
+                  itemBuilder: (context, index) {
+                    final exercise = exercises[index];
+                    return Card(
+                      color: widget.initialExercise == exercise.exercise
+                          ? Colors.yellow.shade100
+                          : null,
+                      child: exercise,
                     );
                   },
-                );
-              },
-              child: const Text("+"),
+                ),
+                Positioned(
+                  bottom: 16.0,
+                  right: 16.0,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AddExerciseDialog(onAdd: _addNewExercise);
+                        },
+                      );
+                    },
+                    child: const Text("+"),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -846,7 +864,7 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
         const ExerciseTile(
           exercise: "Bench Press",
           description:
-          "Arms, shoulders, pec majors, your anterior deltoid, triceps, core",
+              "Arms, shoulders, pec majors, your anterior deltoid, triceps, core",
           form: "https://www.youtube.com/watch?v=hWbUlkb5Ms4",
         ),
         const ExerciseTile(
@@ -877,7 +895,7 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
   Future<void> _saveExercises() async {
     final prefs = await SharedPreferences.getInstance();
     final List<Map<String, dynamic>> data =
-    exercises.map((exercise) => exercise.toJson()).toList();
+        exercises.map((exercise) => exercise.toJson()).toList();
     await prefs.setString('gym_exercises', jsonEncode(data));
   }
 
@@ -885,14 +903,13 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
     final index = exercises.indexWhere((exercise) => exercise.exercise == exerciseName);
     if (index != -1) {
       _scrollController.animateTo(
-        index * 80.0, // Approximate height of each exercise tile
+        index * 80.0,
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
     }
   }
 
-  // Function to handle adding a new exercise
   void _addNewExercise(String exercise, String description, String form) {
     setState(() {
       exercises.add(ExerciseTile(
@@ -901,14 +918,14 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
         form: form,
       ));
     });
-    _saveExercises(); // Save the updated exercises list
+    _saveExercises();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Full list"),
+        title: const Text("Full Gym Training List"),
         actions: [
           IconButton(
             icon: const Icon(Icons.home),
@@ -918,35 +935,48 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
       ),
       body: Stack(
         children: [
-          ListView.builder(
-            controller: _scrollController,
-            itemCount: exercises.length,
-            itemBuilder: (context, index) {
-              final exercise = exercises[index];
-              return Card(
-                color: widget.initialExercise == exercise.exercise
-                    ? Colors.yellow.shade100
-                    : null, // Highlight the matched exercise
-                child: exercise,
-              );
-            },
+          // Background Logo Image
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.1, // Adjust opacity for better visibility
+              child: Image.asset(
+                'assets/images/logo.jpeg',
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          // Add New Exercise Button
-          Positioned(
-            bottom: 16.0,
-            right: 16.0,
-            child: ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AddExerciseDialog(
-                      onAdd: _addNewExercise, // Pass the add function to dialog
+          Expanded(
+            child: Stack(
+              children: [
+                ListView.builder(
+                  controller: _scrollController,
+                  itemCount: exercises.length,
+                  itemBuilder: (context, index) {
+                    final exercise = exercises[index];
+                    return Card(
+                      color: widget.initialExercise == exercise.exercise
+                          ? Colors.yellow.shade100
+                          : null,
+                      child: exercise,
                     );
                   },
-                );
-              },
-              child: const Text("+"),
+                ),
+                Positioned(
+                  bottom: 16.0,
+                  right: 16.0,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AddExerciseDialog(onAdd: _addNewExercise);
+                        },
+                      );
+                    },
+                    child: const Text("+"),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
