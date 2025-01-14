@@ -53,6 +53,7 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeMode get themeMode => _themeMode;
 
+// sledovani prepinani motivu
   void toggleTheme(bool isDarkMode) async {
     _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
     notifyListeners();
@@ -60,6 +61,7 @@ class ThemeProvider extends ChangeNotifier {
     await prefs.setBool('isDarkMode', isDarkMode);
   }
 
+// nacteni motivu
   Future<void> loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
     final isDarkMode = prefs.getBool('isDarkMode') ?? false;
@@ -94,7 +96,6 @@ class MainPage extends State<Mainwidget> {
       ),
       body: Stack(
         children: [
-          // Background image layer
           Positioned.fill(
             child: Opacity(
               opacity: 0.1,
@@ -309,7 +310,6 @@ class WorkoutPlan {
   });
 }
 
-// Advanced Outdoor Training Screen
 class PreMadeOutdoorTraining extends StatefulWidget {
   const PreMadeOutdoorTraining({super.key});
 
@@ -318,12 +318,11 @@ class PreMadeOutdoorTraining extends StatefulWidget {
 }
 
 class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
-   // Tracking workout states (e.g., which workout is active)
   Map<String, bool> workoutInProgress = {};
   Map<String, int> workoutElapsedTime = {}; // To track the elapsed time for each workout
   Map<String, Timer?> workoutTimers = {}; // To hold the timers for each workout
 
-  // Function to start/stop workout
+  // zapnuti vypnuti treninku
   void _toggleWorkout(WorkoutPlan workout) {
     setState(() {
       if (workoutInProgress[workout.name] == true) {
@@ -406,6 +405,7 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
     _loadBookmarks();
   }
 
+// nacteni bookmarku
   Future<void> _loadBookmarks() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -414,6 +414,7 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
     });
   }
 
+// registrace bookmarku
   Future<void> _toggleBookmark(String workoutName) async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -427,6 +428,7 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
     });
   }
 
+// serazeni podle bookmarku
   void _sortWorkouts() {
     workoutPlans.sort((a, b) {
       final aBookmarked = bookmarkedWorkouts.contains(a.name);
@@ -437,6 +439,7 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
     });
   }
 
+// proklik na full list
   void _navigateToFullList(BuildContext context, String exerciseName) {
     Navigator.push(
       context,
@@ -446,6 +449,7 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
     );
   }
 
+// vzhled aplikace
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -460,10 +464,9 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
       ),
      body: Stack(
         children: [
-          // Background Logo Image
           Positioned.fill(
             child: Opacity(
-              opacity: 0.1, // Adjust opacity for better visibility
+              opacity: 0.1,
               child: Image.asset(
                 'assets/images/logo.jpeg',
                 fit: BoxFit.cover,
@@ -526,7 +529,7 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
             }).toList(),
           ),
           const Divider(),
-          // Display Start Workout or Stop Workout Button
+          // zobrazuje bud start workout nebo stop workout
           if (!isWorkoutInProgress) 
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -551,7 +554,7 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
                     label: const Text("Stop Workout"),
                   ),
                   const SizedBox(width: 16),
-                  // Display elapsed time while the workout is in progress
+                  // zobrazuje cas
                   Text(
                     'Time: $formattedTime',
                     style: const TextStyle(fontSize: 16),
@@ -574,6 +577,36 @@ class PreMadeGymTraining extends StatefulWidget {
 }
 
 class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
+  Map<String, bool> workoutInProgress = {};
+  Map<String, int> workoutElapsedTime = {}; // trackuje na pozdejsi vyuziti
+  Map<String, Timer?> workoutTimers = {}; // kazdy trenink ma svuj timer
+
+void _toggleWorkout(WorkoutPlan workout) {
+    setState(() {
+      if (workoutInProgress[workout.name] == true) {
+        // vypnuti treninku
+        workoutInProgress[workout.name] = false;
+        workoutTimers[workout.name]?.cancel(); // zastaveni casu
+      } else {
+        // spousteni casu
+        workoutInProgress[workout.name] = true;
+        workoutElapsedTime[workout.name] = 0; // resetnuti casu
+        // Start the timer
+        workoutTimers[workout.name] = Timer.periodic(const Duration(seconds: 1), (timer) {
+          setState(() {
+            workoutElapsedTime[workout.name] = workoutElapsedTime[workout.name]! + 1; // inkrementace casu
+          });
+        });
+      }
+    });
+  }
+
+  String _formatElapsedTime(int seconds) {
+    final minutes = (seconds / 60).floor();
+    final remainingSeconds = seconds % 60;
+    return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
+  }
+
   final List<WorkoutPlan> workoutPlans = [
     WorkoutPlan(
       name: "Upper body",
@@ -686,10 +719,9 @@ class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
       ),
      body: Stack(
         children: [
-          // Background Logo Image
           Positioned.fill(
             child: Opacity(
-              opacity: 0.1, // Adjust opacity for better visibility
+              opacity: 0.1,
               child: Image.asset(
                 'assets/images/logo.jpeg',
                 fit: BoxFit.cover,
@@ -713,6 +745,10 @@ class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
 
   Widget _buildWorkoutCard(BuildContext context, WorkoutPlan workout) {
     final isBookmarked = bookmarkedWorkouts.contains(workout.name);
+    final isWorkoutInProgress = workoutInProgress[workout.name] ?? false;
+    final elapsedTime = workoutElapsedTime[workout.name] ?? 0;
+    final formattedTime = _formatElapsedTime(elapsedTime);
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
@@ -735,31 +771,52 @@ class _PreMadeGymTrainingState extends State<PreMadeGymTraining> {
                 title: Text(entry.key, style: const TextStyle(fontWeight: FontWeight.bold)),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: entry.value
-                      .map((exercise) => GestureDetector(
-                            onTap: () {
-                              _navigateToFullList(context, exercise.split(" - ").first);
-                            },
-                            child: Text("- $exercise"),
-                          ))
-                      .toList(),
+                  children: entry.value.map((exercise) {
+                    return GestureDetector(
+                      onTap: () {
+                        _navigateToFullList(context, exercise.split(" - ").first);
+                      },
+                      child: Text("- $exercise"),
+                    );
+                  }).toList(),
                 ),
               );
             }).toList(),
           ),
           const Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  // Start workout logic
-                },
-                icon: const Icon(Icons.play_arrow),
-                label: const Text("Start Workout"),
+          // Display Start Workout or Stop Workout Button
+          if (!isWorkoutInProgress) 
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () => _toggleWorkout(workout),
+                  icon: const Icon(Icons.play_arrow),
+                  label: const Text("Start Workout"),
+                ),
+              ],
+            ),
+          if (isWorkoutInProgress) 
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () => _toggleWorkout(workout),
+                    icon: const Icon(Icons.stop),
+                    label: const Text("Stop Workout"),
+                  ),
+                  const SizedBox(width: 16),
+                  // Display elapsed time while the workout is in progress
+                  Text(
+                    'Time: $formattedTime',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
         ],
       ),
     );
@@ -791,6 +848,7 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
     });
   }
 
+// nacteni cviku
   Future<void> _loadExercises() async {
     final prefs = await SharedPreferences.getInstance();
     final savedData = prefs.getString('outdoor_exercises');
@@ -805,6 +863,7 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
     }
   }
 
+// zakladni cviky aplikace
   void _setDefaultExercises() {
     setState(() {
       exercises = [
@@ -848,6 +907,7 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
     _saveExercises();
   }
 
+// ukladani vytvoreneho cviku
   Future<void> _saveExercises() async {
     final prefs = await SharedPreferences.getInstance();
     final List<Map<String, dynamic>> data =
@@ -855,6 +915,7 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
     await prefs.setString('outdoor_exercises', jsonEncode(data));
   }
 
+// najeti na cvik po prokliknuti
   void _scrollToExercise(String exerciseName) {
     final index = exercises.indexWhere((exercise) => exercise.exercise == exerciseName);
     if (index != -1) {
@@ -866,6 +927,7 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
     }
   }
 
+// vytvareni noveho cviku
   void _addNewExercise(String exercise, String description, String form) {
     setState(() {
       exercises.add(ExerciseTile(
@@ -877,6 +939,7 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
     _saveExercises();
   }
 
+// vzhled stranky
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -891,10 +954,9 @@ class _FullListOutdoorTrainingState extends State<FullListOutdoorTraining> {
       ),
       body: Stack(
         children: [
-          // Background Logo Image
           Positioned.fill(
             child: Opacity(
-              opacity: 0.1, // Adjust opacity for better visibility
+              opacity: 0.1, 
               child: Image.asset(
                 'assets/images/logo.jpeg',
                 fit: BoxFit.cover,
@@ -965,6 +1027,7 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
     });
   }
 
+// nacteni cviku
   Future<void> _loadExercises() async {
     final prefs = await SharedPreferences.getInstance();
     final savedData = prefs.getString('gym_exercises');
@@ -979,6 +1042,7 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
     }
   }
 
+// zakladni cviky pouzity v aplikaci
   void _setDefaultExercises() {
     setState(() {
       exercises = [
@@ -1043,6 +1107,7 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
     _saveExercises();
   }
 
+// ukladani cviku
   Future<void> _saveExercises() async {
     final prefs = await SharedPreferences.getInstance();
     final List<Map<String, dynamic>> data =
@@ -1050,6 +1115,7 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
     await prefs.setString('gym_exercises', jsonEncode(data));
   }
 
+// hledani cviku po prokliku
   void _scrollToExercise(String exerciseName) {
     final index = exercises.indexWhere((exercise) => exercise.exercise == exerciseName);
     if (index != -1) {
@@ -1061,6 +1127,7 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
     }
   }
 
+// pridani cviku
   void _addNewExercise(String exercise, String description, String form) {
     setState(() {
       exercises.add(ExerciseTile(
@@ -1072,6 +1139,7 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
     _saveExercises();
   }
 
+// vzhled stranky
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1086,10 +1154,9 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
       ),
       body: Stack(
         children: [
-          // Background Logo Image
           Positioned.fill(
             child: Opacity(
-              opacity: 0.1, // Adjust opacity for better visibility
+              opacity: 0.1, 
               child: Image.asset(
                 'assets/images/logo.jpeg',
                 fit: BoxFit.cover,
@@ -1136,7 +1203,7 @@ class _FullListGymTrainingState extends State<FullListGymTraining> {
   }
 }
 
-
+// kontrola zadanych udaju pri vytvoreni cviku
 class ExerciseTile extends StatelessWidget {
   final String exercise;
   final String description;
@@ -1165,10 +1232,13 @@ class ExerciseTile extends StatelessWidget {
     };
   }
 
+// kontroluje jestli je video link
   bool _isVideoLink(String url) {
     return Uri.tryParse(url)?.hasAbsolutePath ?? false;
   }
 
+
+// otevirani linku
   void _openVideoLink(BuildContext context, String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
@@ -1179,6 +1249,7 @@ class ExerciseTile extends StatelessWidget {
     }
   }
 
+// tvorba cviku v aplikaci
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -1217,6 +1288,7 @@ class ExerciseTile extends StatelessWidget {
   }
 }
 
+// formular ktery se vyplnuje pro pridani cviku
 class AddExerciseDialog extends StatefulWidget {
   final Function(String, String, String) onAdd;
 
