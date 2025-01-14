@@ -3,6 +3,7 @@ import 'package:flutter_emoji/flutter_emoji.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
+import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
 
 
@@ -317,6 +318,37 @@ class PreMadeOutdoorTraining extends StatefulWidget {
 }
 
 class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
+   // Tracking workout states (e.g., which workout is active)
+  Map<String, bool> workoutInProgress = {};
+  Map<String, int> workoutElapsedTime = {}; // To track the elapsed time for each workout
+  Map<String, Timer?> workoutTimers = {}; // To hold the timers for each workout
+
+  // Function to start/stop workout
+  void _toggleWorkout(WorkoutPlan workout) {
+    setState(() {
+      if (workoutInProgress[workout.name] == true) {
+        // If workout is in progress, stop it
+        workoutInProgress[workout.name] = false;
+        workoutTimers[workout.name]?.cancel(); // Stop the timer
+      } else {
+        // If workout is not started, start it
+        workoutInProgress[workout.name] = true;
+        workoutElapsedTime[workout.name] = 0; // Reset the time
+        // Start the timer
+        workoutTimers[workout.name] = Timer.periodic(const Duration(seconds: 1), (timer) {
+          setState(() {
+            workoutElapsedTime[workout.name] = workoutElapsedTime[workout.name]! + 1; // Increment the time
+          });
+        });
+      }
+    });
+  }
+
+  String _formatElapsedTime(int seconds) {
+    final minutes = (seconds / 60).floor();
+    final remainingSeconds = seconds % 60;
+    return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
+  }
   final List<WorkoutPlan> workoutPlans = [
     WorkoutPlan(
       name: "Lower body",
@@ -455,6 +487,10 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
 
   Widget _buildWorkoutCard(BuildContext context, WorkoutPlan workout) {
     final isBookmarked = bookmarkedWorkouts.contains(workout.name);
+    final isWorkoutInProgress = workoutInProgress[workout.name] ?? false;
+    final elapsedTime = workoutElapsedTime[workout.name] ?? 0;
+    final formattedTime = _formatElapsedTime(elapsedTime);
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
@@ -477,31 +513,52 @@ class _PreMadeOutdoorTrainingState extends State<PreMadeOutdoorTraining> {
                 title: Text(entry.key, style: const TextStyle(fontWeight: FontWeight.bold)),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: entry.value
-                      .map((exercise) => GestureDetector(
-                            onTap: () {
-                              _navigateToFullList(context, exercise.split(" - ").first);
-                            },
-                            child: Text("- $exercise"),
-                          ))
-                      .toList(),
+                  children: entry.value.map((exercise) {
+                    return GestureDetector(
+                      onTap: () {
+                        _navigateToFullList(context, exercise.split(" - ").first);
+                      },
+                      child: Text("- $exercise"),
+                    );
+                  }).toList(),
                 ),
               );
             }).toList(),
           ),
           const Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  // Start workout logic
-                },
-                icon: const Icon(Icons.play_arrow),
-                label: const Text("Start Workout"),
+          // Display Start Workout or Stop Workout Button
+          if (!isWorkoutInProgress) 
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () => _toggleWorkout(workout),
+                  icon: const Icon(Icons.play_arrow),
+                  label: const Text("Start Workout"),
+                ),
+              ],
+            ),
+          if (isWorkoutInProgress) 
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () => _toggleWorkout(workout),
+                    icon: const Icon(Icons.stop),
+                    label: const Text("Stop Workout"),
+                  ),
+                  const SizedBox(width: 16),
+                  // Display elapsed time while the workout is in progress
+                  Text(
+                    'Time: $formattedTime',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
         ],
       ),
     );
